@@ -76,7 +76,7 @@ class Model:
     def _calc_new_anomaly(self, time, epoch, mean_anomaly, semimajor_axis):
         """Calculate the new anomaly of an object at a specific time point in days"""
 
-        time_delta = self.JD * (time - epoch)  # s
+        time_delta = time - epoch  # s
         mean_anomaly = mean_anomaly + time_delta * np.sqrt(self.mu / semimajor_axis**3)
 
         # assumming eccentricity is 0:
@@ -106,6 +106,12 @@ class Model:
         )
         return pos
 
+    def _initialize_position(self, object: Object):
+        max_epoch = 1635771601.0
+        initialized_anomaly = self._calc_new_anomaly(max_epoch, object.epoch, object.mean_anomaly, object.semimajor_axis)
+        return initialized_anomaly
+        
+
     def calc_all_positions():
         """Calculate the new positions of all objects"""
         pass
@@ -117,14 +123,15 @@ if __name__ == "__main__":
     # inladen csv 
     Objects_list = []
 
-    with open('file.csv', 'r') as f:
+    with open('data/satelite2.csv', 'r') as f:
         reader = csv.reader(f)
+        next(reader)
         for row in reader:
-            Objects_list.append(Object(row[0], row[1], row[2],row[3] * (np.pi / 180), row[4] * (np.pi / 180),
-             row[5] * (np.pi / 180) ,row[6] * (np.pi / 180), row[7], row[8], row[9], 
-            row[10], row[11], row[12], row[13], row[14], row[15]))
+            Objects_list.append(Object(float(row[0]), float(row[1]), float(row[2]),float(row[3]) * (np.pi / 180), float(row[4]) * (np.pi / 180),
+             float(row[5]) * (np.pi / 180) ,float(row[6]) * (np.pi / 180), row[7], float(row[8]), float(row[9]), 
+            float(row[10]), float(row[11]), row[12], row[13], row[14], row[15]))
 
-
+    print(model._initialize_position(Objects_list[0]))
 
 
 
