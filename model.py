@@ -112,21 +112,16 @@ if __name__ == "__main__":
         1,
     )
 
-    positions_x = [
-        model.new_position(t + 17352.664, satellite)[0] / 1000
+    positions = [
+        model.new_position(t + 17352.664, satellite) / 1000
         for t in np.arange(0, 1 / 24, 0.001)
     ]
-    positions_y = [
-        model.new_position(t + 17352.664, satellite)[1] / 1000
-        for t in np.arange(0, 1 / 24, 0.001)
-    ]
-    positions_z = [
-        model.new_position(t + 17352.664, satellite)[2] / 1000
-        for t in np.arange(0, 1 / 24, 0.001)
-    ]
+
     fig = plt.figure()
     ax = plt.axes(projection="3d")
-    ax.scatter3D(positions_x, positions_y, positions_z)
+    for position in positions:
+        ax.scatter3D(position[0], position[1], position[2], c="red")
+
     ax.scatter3D(0, 0, 0)
     ax.set_xlabel("x")
     ax.set_ylabel("y")
