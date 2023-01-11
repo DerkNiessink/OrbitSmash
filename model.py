@@ -36,6 +36,16 @@ class Object:
         self.radius = radius
 
 
+class Satellite:
+    def __init__(self):
+        pass
+
+
+class Debris:
+    def __init__(self):
+        pass
+
+
 class Model:
 
     # standard gravitational parameter = G * M
@@ -60,7 +70,7 @@ class Model:
         """Update the simulation"""
         pass
 
-    def calc_new_anomaly(self, time, epoch, mean_anomaly, semi_major_a):
+    def _calc_new_anomaly(self, time, epoch, mean_anomaly, semi_major_a):
         """Calculate the new anomaly of an object at a specific time point in days"""
 
         time_delta = self.JD * (time - epoch)  # s
@@ -71,7 +81,7 @@ class Model:
 
         return true_anomaly
 
-    def rotate_to_earth_frame(self, pos_orbit_frame, arg_of_peri, LAN, incl):
+    def _rotate_to_earth_frame(self, pos_orbit_frame, arg_of_peri, LAN, incl):
         """Rotate a vector in the orbit frame (z-axis perpendicular to
         orbital plane, x-asis pointing to periapses of orbit) to the earth
         frame"""
@@ -81,14 +91,14 @@ class Model:
     def new_position(self, time, object: Object):
         """Calculate the position of an object at specific point in time"""
 
-        true_anomaly = self.calc_new_anomaly(
+        true_anomaly = self._calc_new_anomaly(
             time, object.epoch, object.mean_anomaly, object.semi_major_a
         )
         pos_orbit_frame = (
             np.array([np.cos(true_anomaly), np.sin(true_anomaly), 0])
             * object.semi_major_a
         )
-        pos = self.rotate_to_earth_frame(
+        pos = self._rotate_to_earth_frame(
             pos_orbit_frame, object.arg_of_peri, object.LAN, object.incl
         )
         return pos
