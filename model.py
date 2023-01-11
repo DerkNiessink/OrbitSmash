@@ -1,63 +1,134 @@
 # import different libaries
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.spatial.transform import Rotation
+
+
+class Object:
+    def __init__(
+        self,
+        epoch,
+        semi_major_axis,
+        eccentricity,
+        argument_of_periapsis,
+        longitude_of_ascending_node,
+        inclination,
+        mean_anomaly,
+        mass,
+        radius,
+    ):
+        """
+        Class to model the objects.
+        """
+
+        # Keplerian orbital elements
+        self.semi_major_a = semi_major_axis  # m
+        self.ecc = eccentricity  # 1
+        self.arg_of_peri = argument_of_periapsis  # rad
+        self.LAN = longitude_of_ascending_node  # rad
+        self.incl = inclination  # rad
+        self.mean_anomaly = mean_anomaly  # rad
+
+        # time of mean_anomaly
+        self.epoch = epoch  # JD
+
+        self.mass = mass
+        self.radius = radius
 
 
 class Model:
-    def __init__(self, number_of_satelites, number_of_debris, new_satelite):
+
+    # standard gravitational parameter = G * M
+    JD = 86400  # s
+    mu = 6.6743 * 10**-11 * 5.972 * 10**24  # m**3 * s**-2
+
+    def __init__(self, number_of_satelites, number_of_debris):
         """
         Model parameters
         Initialize the model with the parameters.
         """
 
-        def set_satelites():
-            """Creates initial satelites, with a state, radius and speed."""
-            pass
+    def set_satelites():
+        """Creates initial satelites, with a state, radius and speed."""
+        pass
 
-        def set_debris():
-            """Creates initial debris, with a state, radius and speed."""
-            pass
+    def set_debris():
+        """Creates initial debris, with a state, radius and speed."""
+        pass
 
-        def update():
-            """Update the simulation"""
-            pass
+    def update():
+        """Update the simulation"""
+        pass
 
-        def calc_new_position():
-            """Calculate the new position of a specific object"""
-            pass
+    def calc_new_anomaly(self, time, epoch, mean_anomaly, semi_major_a):
+        """Calculate the new anomaly of an object at a specific time point in days"""
 
-        def calc_all_positions():
-            """Calculate the new positions of all objects"""
-            pass
+        time_delta = self.JD * (time - epoch)  # s
+        mean_anomaly = mean_anomaly + time_delta * np.sqrt(self.mu / semi_major_a**3)
 
+        # assumming eccentricity is 0:
+        true_anomaly = mean_anomaly
 
-class Satelite:
-    def __init__(self, state, radius, position, path, size, mass, speed):
-        """
-        Class to model the satelites.
-        """
-        self.state = state  # is the satelite active or inactive?
-        self.radius = radius
-        self.position = position
-        self.path = path
-        self.size = size
-        self.mass = mass
-        self.speed = speed
+        return true_anomaly
 
+    def rotate_to_earth_frame(self, pos_orbit_frame, arg_of_peri, LAN, incl):
+        """Rotate a vector in the orbit frame (z-axis perpendicular to
+        orbital plane, x-asis pointing to periapses of orbit) to the earth
+        frame"""
+        R = Rotation.from_euler("zxz", [-LAN, -incl, -arg_of_peri])
+        return R.as_matrix().dot(pos_orbit_frame)
 
-class Debris:
-    def __init__(self, state, radius, position, path, size, mass, speed):
-        """
-        Class to model the debris.
-        """
-        self.state = state  # is the debris lethal or non-lethal?
-        self.radius = radius
-        self.position = position
-        self.path = path
-        self.size = size
-        self.mass = mass
-        self.speed = speed
+    def new_position(self, time, object: Object):
+        """Calculate the position of an object at specific point in time"""
+
+        true_anomaly = self.calc_new_anomaly(
+            time, object.epoch, object.mean_anomaly, object.semi_major_a
+        )
+        pos_orbit_frame = (
+            np.array([np.cos(true_anomaly), np.sin(true_anomaly), 0])
+            * object.semi_major_a
+        )
+        pos = self.rotate_to_earth_frame(
+            pos_orbit_frame, object.arg_of_peri, object.LAN, object.incl
+        )
+        return pos
+
+    def calc_all_positions():
+        """Calculate the new positions of all objects"""
+        pass
 
 
 if __name__ == "__main__":
-    pass
+    model = Model(1, 0)
+    satellite = Object(
+        17352.664,
+        6738000,
+        0,
+        256.7529 * (np.pi / 180),
+        198.7788 * (np.pi / 180),
+        51.6357 * (np.pi / 180),
+        103.3278 * (np.pi / 1),
+        1,
+        1,
+    )
+
+    positions_x = [
+        model.new_position(t + 17352.664, satellite)[0] / 1000
+        for t in np.arange(0, 1 / 24, 0.001)
+    ]
+    positions_y = [
+        model.new_position(t + 17352.664, satellite)[1] / 1000
+        for t in np.arange(0, 1 / 24, 0.001)
+    ]
+    positions_z = [
+        model.new_position(t + 17352.664, satellite)[2] / 1000
+        for t in np.arange(0, 1 / 24, 0.001)
+    ]
+    fig = plt.figure()
+    ax = plt.axes(projection="3d")
+    ax.scatter3D(positions_x, positions_y, positions_z)
+    ax.scatter3D(0, 0, 0)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel("z")
+    fig.savefig("test.png")
