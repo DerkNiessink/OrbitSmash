@@ -1,24 +1,36 @@
 from vpython import *
+from model import Model, Object
+import numpy as np
 
-G=6.67e-11
-RE=6.378e6
-ME=5.972e24
+model = Model(1, 0)
+satellite = Object(
+    17352.664,
+    6738000,
+    0,
+    256.7529 * (np.pi / 180),
+    198.7788 * (np.pi / 180),
+    51.6357 * (np.pi / 180),
+    103.3278 * (np.pi / 1),
+    1,
+    1,
+)
+
+positions = [model.new_position(t + 17352.664, satellite) for t in np.arange(0, 1, 0.00001)]
+
+RE=6.378*(10**6)
 
 Earth=sphere(pos=vector(0,0,0),radius=RE, texture=textures.earth)
-Earth.m=ME
-Earth.p=Earth.m*vector(0,0,0)
 
-# sat=sphere(pos=vector(2*RE,0,0),radius=.03*RE, make_trail=True)
-# sat.m=100
-# sat.p=sat.m*vector(0,5000,0)
 
-# t=0
-# dt=1
+sat=sphere(pos=vector(positions[0][0], positions[0][1], positions[0][2]),radius=.03*RE, make_trail=False)
 
-# while t<10000:
-#   rate(400)
+
+t=0
+dt=1
+
+while t<1000000:
+  rate(400)
 #   r=sat.pos-Earth.pos
-#   F=-G*Earth.m*sat.m*norm(r)/mag(r)**2
-#   sat.p=sat.p+F*dt
-#   sat.pos=sat.pos+sat.p*dt/sat.m
-#   t=t+dt
+
+  sat.pos=vector(positions[t][0], positions[t][1], positions[t][2])
+  t=t+dt
