@@ -46,7 +46,7 @@ class Object:
         self.launch_date = launch_date
 
         positions = []
-        self.positions = positions 
+        self.positions = positions
 
 
 class Model:
@@ -161,20 +161,21 @@ class Model:
             object.mean_anomaly = initialized_anomaly
             object.epoch = epoch
 
-    def calc_all_positions(self, objects: list[Object], endtime, timestep):
+    def calc_all_positions(
+        self, objects: list[Object], endtime, timestep, epoch=1635771601.0
+    ):
         """
         Calculate the new positions of all objects by first initializing all positions.
-        
+
         objects: list of objects to be evaluated.
         endtime: how long you want the trial to be.
         timestep: the size of the steps in time.
         """
-        self.initialize_positions(objects, 1635771601.0)
+        self.initialize_positions(objects, epoch)
 
         for object in objects:
-            for time in range(int(object.epoch), int(object.epoch+endtime), timestep):
+            for time in range(int(object.epoch), int(object.epoch + endtime), timestep):
                 new_position = self.new_position(time, object)
                 object.positions.append(new_position)
 
             print(object.norad_cat_id, object.positions)
-        pass
