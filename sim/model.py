@@ -104,7 +104,7 @@ class Model:
         Returns the rotated position vector, now in the Earth's frame.
         """
         R = Rotation.from_euler(
-            "zxz", [-ra_of_asc_node, -inclination, -arg_of_pericenter]
+            "zxz", [-ra_of_asc_node, -inclination, -arg_of_pericenter], degrees=True
         )
         return R.as_matrix().dot(pos_orbit_frame)
 
@@ -118,12 +118,13 @@ class Model:
         Returns the 3D position vector (in the Earth frame) of the object at
         the given time.
         """
-
         true_anomaly = self._calc_new_anomaly(
             time, object.epoch, object.mean_anomaly, object.semimajor_axis
         )
         pos_orbit_frame = (
-            np.array([np.cos(true_anomaly), np.sin(true_anomaly), 0])
+            np.array(
+                [np.cos(np.deg2rad(true_anomaly)), np.sin(np.deg2rad(true_anomaly)), 0]
+            )
             * object.semimajor_axis
         )
         pos = self._rotate_to_earth_frame(
@@ -163,10 +164,9 @@ class Model:
         """
         self.initialize_positions(objects, epoch)
         datadict = defaultdict(list)
-        self.initialize_positions(objects, 1635771601.0)
 
         for object in objects:
-            for time in range(int(object.epoch), int(object.epoch + endtime), timestep):
+            for time in np.arange(object.epoch, object.epoch + endtime, timestep):
                 new_position = self.new_position(time, object)
                 object.positions.append(new_position)
 
