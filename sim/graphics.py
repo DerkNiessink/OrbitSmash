@@ -1,3 +1,4 @@
+import sys
 from vpython import *
 
 from model import Object
@@ -9,10 +10,16 @@ class View:
     def __init__(self, objects: list[Object]):
         self.objects = objects
         self.Earth = sphere(pos=vector(0, 0, 0), radius=self.RE, texture=textures.earth)
+        scene.width, scene.height = 1900, 980
         self.drawables = self._make_drawables()
         self.n_positions = len(objects[0].positions)
 
-    def _make_drawables(self):
+    def _make_drawables(self) -> list[sphere]:
+        """
+        Create spheres from the objects that can be drawn on the screen
+
+        Returns the drawable spheres with an initial positions.
+        """
         drawables = [
             sphere(
                 pos=vector(
@@ -27,12 +34,18 @@ class View:
         ]
         return drawables
 
-    def draw(self):
+    def draw(self, fps=40):
+        """
+        Draw the objects on the screen in the browser.
+
+        rate: rate of the drawi
+        """
         for i in range(self.n_positions):
-            rate(40)
+            rate(fps)
             for object, drawable in zip(self.objects, self.drawables):
                 drawable.pos = vector(
                     object.positions[i][0],
                     object.positions[i][1],
                     object.positions[i][2],
                 )
+        sys.exit()

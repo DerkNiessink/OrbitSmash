@@ -56,12 +56,6 @@ class Model:
     JD = 86400  # s
     mu = 6.6743 * 10**-11 * 5.972 * 10**24  # m**3 * s**-2
 
-    def __init__(self):
-        """
-        Model parameters
-        Initialize the model with the parameters.
-        """
-
     def _calc_new_anomaly(self, time, epoch, mean_anomaly, semimajor_axis):
         """
         Calculate the new anomaly of an object at a specific Julian date in
@@ -168,7 +162,7 @@ class Model:
         for object in objects:
             for time in np.arange(object.epoch, object.epoch + endtime, timestep):
                 new_position = self.new_position(time, object)
-                object.positions.append(new_position)
+                object.positions.append(tuple(new_position))
 
             datadict[object.norad_cat_id].append(object.positions)
 
