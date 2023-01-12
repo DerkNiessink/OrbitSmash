@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.spatial.transform import Rotation
+import pandas as pd 
+from collections import defaultdict
 
 
 class Object:
@@ -21,6 +23,7 @@ class Object:
         rcs_size,
         country_code,
         launch_date,
+        subclass 
     ):
         """
         Class to model the objects.
@@ -44,6 +47,7 @@ class Object:
         self.rcs_size = rcs_size
         self.country_code = country_code
         self.launch_date = launch_date
+        self.subclass = subclass # de subclass waar het object zich in bevind
 
         positions = []
         self.positions = positions 
@@ -61,17 +65,6 @@ class Model:
         Initialize the model with the parameters.
         """
 
-    def set_satelites():
-        """Creates initial satelites, with a state, radius and speed."""
-        pass
-
-    def set_debris():
-        """Creates initial debris, with a state, radius and speed."""
-        pass
-
-    def update():
-        """Update the simulation"""
-        pass
 
     def _calc_new_anomaly(self, time, epoch, mean_anomaly, semimajor_axis):
         """
@@ -161,7 +154,7 @@ class Model:
             object.mean_anomaly = initialized_anomaly
             object.epoch = epoch
 
-    def calc_all_positions(self, objects: list[Object], endtime, timestep):
+    def calc_all_positions(self, objects: list[Object], endtime, timestep, epoch = 1635771601.0):
         """
         Calculate the new positions of all objects by first initializing all positions.
         
@@ -169,12 +162,25 @@ class Model:
         endtime: how long you want the trial to be.
         timestep: the size of the steps in time.
         """
-        self.initialize_positions(objects, 1635771601.0)
+        self.initialize_positions(objects, epoch)
+        datadict = defaultdict(list)
 
         for object in objects:
             for time in range(int(object.epoch), int(object.epoch+endtime), timestep):
                 new_position = self.new_position(time, object)
                 object.positions.append(new_position)
+        
+            datadict[object.norad_cat_id].append(object.positions)
+        
+        df = pd.DataFrame(datadict)
+        df.to_csv('sim/output.csv', index=False) 
 
-            print(object.norad_cat_id, object.positions)
         pass
+
+    def update():
+        """Update the simulation"""
+        pass
+
+    def collision():
+        pass 
+
