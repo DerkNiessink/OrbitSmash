@@ -2,7 +2,7 @@ import numpy as np
 import csv
 
 from model import Object, Model
-
+# import graphics
 
 model = Model()
 
@@ -32,6 +32,8 @@ with open("data/satelite2.csv", "r") as f:
     ]
 
 model.initialize_positions(objects, 1635771601.0)
-model.calc_all_positions(objects, 1000, 5)
+model.calc_all_positions(objects, 10, 10)
+
+# graphics.plot(objects, all_positions)
 
 print(len(objects))

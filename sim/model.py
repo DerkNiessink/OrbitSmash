@@ -162,12 +162,19 @@ class Model:
             object.epoch = epoch
 
     def calc_all_positions(self, objects: list[Object], endtime, timestep):
-        """Calculate the new positions of all objects"""
+        """
+        Calculate the new positions of all objects by first initializing all positions.
+        
+        objects: list of objects to be evaluated.
+        endtime: how long you want the trial to be.
+        timestep: the size of the steps in time.
+        """
         self.initialize_positions(objects, 1635771601.0)
 
         for object in objects:
             for time in range(int(object.epoch), int(object.epoch+endtime), timestep):
                 new_position = self.new_position(time, object)
-                print(self.new_position(time, object))
                 object.positions.append(new_position)
+
+            print(object.norad_cat_id, object.positions)
         pass
