@@ -3,6 +3,21 @@ import numpy as np
 
 from sim.model import Model, Object
 
+
+class View:
+    RE = 6.378 * (10**6)
+
+    def __init__(self, objects: list[Object]):
+        self.objects = objects
+        self.Earth = sphere(pos=vector(0, 0, 0), radius=self.RE, texture=textures.earth)
+
+    def _initialize_objects():
+        pass
+
+    def draw(n_positions):
+        pass
+
+
 model = Model()
 
 satellite = Object(

@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.spatial.transform import Rotation
-import pandas as pd 
+import pandas as pd
 from collections import defaultdict
 
 
@@ -23,7 +23,6 @@ class Object:
         rcs_size,
         country_code,
         launch_date,
-        subclass 
     ):
         """
         Class to model the objects.
@@ -47,10 +46,8 @@ class Object:
         self.rcs_size = rcs_size
         self.country_code = country_code
         self.launch_date = launch_date
-        self.subclass = subclass # de subclass waar het object zich in bevind
 
-        positions = []
-        self.positions = positions
+        self.positions = []
 
 
 class Model:
@@ -64,7 +61,6 @@ class Model:
         Model parameters
         Initialize the model with the parameters.
         """
-
 
     def _calc_new_anomaly(self, time, epoch, mean_anomaly, semimajor_axis):
         """
@@ -154,14 +150,19 @@ class Model:
             object.mean_anomaly = initialized_anomaly
             object.epoch = epoch
 
-    def calc_all_positions(self, objects: list[Object], endtime, timestep):
+    def calc_all_positions(
+        self, objects: list[Object], endtime, timestep, epoch=1635771601.0
+    ):
         """
-        Calculate the new positions of all objects by first initializing all positions.
+        Calculate the new positions of all objects by first initializing all
+        positions and save the positions in a csv as "output.csv".
 
         objects: list of objects to be evaluated.
         endtime: how long you want the trial to be.
         timestep: the size of the steps in time.
         """
+        self.initialize_positions(objects, epoch)
+        datadict = defaultdict(list)
         self.initialize_positions(objects, 1635771601.0)
 
         for object in objects:
@@ -169,9 +170,10 @@ class Model:
                 new_position = self.new_position(time, object)
                 object.positions.append(new_position)
 
-            print(object.norad_cat_id, object.positions)
-        pass
+            datadict[object.norad_cat_id].append(object.positions)
+
+        df = pd.DataFrame(datadict)
+        df.to_csv("output.csv", index=False)
 
     def collision():
-        pass 
-
+        pass
