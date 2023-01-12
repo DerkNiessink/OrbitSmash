@@ -37,7 +37,7 @@ t = 0
 dt = 1
 
 while t < 1000000:
-    rate(400)
+    rate(40)
     #   r=sat.pos-Earth.pos
 
     sat.pos = vector(positions[t][0], positions[t][1], positions[t][2])

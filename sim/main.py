@@ -6,7 +6,7 @@ from model import Object, Model
 
 model = Model()
 
-with open("../data/satelite2.csv", "r") as f:
+with open("data/satelite2.csv", "r") as f:
     reader = csv.reader(f)
     next(reader)
     objects = [
@@ -32,5 +32,6 @@ with open("../data/satelite2.csv", "r") as f:
     ]
 
 model.initialize_positions(objects, 1635771601.0)
+model.calc_all_positions(objects, 1000, 5)
 
 print(len(objects))

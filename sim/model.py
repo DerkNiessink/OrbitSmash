@@ -45,6 +45,9 @@ class Object:
         self.country_code = country_code
         self.launch_date = launch_date
 
+        positions = []
+        self.positions = positions 
+
 
 class Model:
 
@@ -158,6 +161,13 @@ class Model:
             object.mean_anomaly = initialized_anomaly
             object.epoch = epoch
 
-    def calc_all_positions():
+    def calc_all_positions(self, objects: list[Object], endtime, timestep):
         """Calculate the new positions of all objects"""
+        self.initialize_positions(objects, 1635771601.0)
+
+        for object in objects:
+            for time in range(int(object.epoch), int(object.epoch+endtime), timestep):
+                new_position = self.new_position(time, object)
+                print(self.new_position(time, object))
+                object.positions.append(new_position)
         pass
