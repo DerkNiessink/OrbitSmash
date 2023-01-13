@@ -23,7 +23,7 @@ class Object:
         rcs_size,
         country_code,
         launch_date,
-        subsection 
+        octree
     ):
         """
         Class to model the objects.
@@ -39,7 +39,7 @@ class Object:
         self.arg_of_pericenter = arg_of_pericenter  # rad
         self.mean_anomaly = mean_anomaly  # rad
         self.norad_cat_id = norad_cat_id
-        self.semimajor_axis = semimajor_axis  # m
+        self.semimajor_axis = semimajor_axis  # meter, minimum = 6542.85, maximum = 8370.819
         self.period = period
         self.apoapsis = apoapsis
         self.periapsis = periapsis
@@ -47,7 +47,7 @@ class Object:
         self.rcs_size = rcs_size
         self.country_code = country_code
         self.launch_date = launch_date
-        self.subsection = subsection
+        self.octree = octree
 
         self.positions = []
 
@@ -172,10 +172,6 @@ class Model:
         df.to_csv("output.csv", index=False)
 
 
-    def octree(self, subsection):
-        
-
-        pass
 
     def collision():
         pass
