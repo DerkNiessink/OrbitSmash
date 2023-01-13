@@ -27,18 +27,27 @@ class View:
                     object.positions[0][1],
                     object.positions[0][2],
                 ),
-                radius=0.01 * self.RE,
+                radius=0.005 * self.RE,
                 make_trail=False,
+                color=self._get_color_(object),
             )
             for object in self.objects
         ]
         return drawables
 
+    def _get_color_(self, object: Object) -> vector:
+        """Returns the color vector of the given object"""
+
+        if object.object_type == "DEBRIS":
+            return vector(1, 0, 0)
+        else:
+            return vector(1, 1, 1)
+
     def draw(self, fps=40):
         """
         Draw the objects on the screen in the browser.
 
-        rate: rate of the drawi
+        fps: frame per seconds.
         """
         for i in range(self.n_positions):
             rate(fps)

@@ -55,7 +55,7 @@ if __name__ == "__main__":
             for row in reader
         ]
 
-    objects = objects[0:100]
+    objects = objects[0:1000]
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":
         run_sim(objects)
