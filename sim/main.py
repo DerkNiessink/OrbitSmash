@@ -26,6 +26,11 @@ def view_sim(objects: list[Object]):
     view = View(objects)
     view.draw(fps=40)
 
+def octree(self, total_bandwidth= 1828, margin = 20):
+    for i in range(total_bandwidth): 
+        
+    pass
+
 
 if __name__ == "__main__":
 

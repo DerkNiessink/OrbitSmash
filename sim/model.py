@@ -23,6 +23,7 @@ class Object:
         rcs_size,
         country_code,
         launch_date,
+        subsection 
     ):
         """
         Class to model the objects.
@@ -46,6 +47,7 @@ class Object:
         self.rcs_size = rcs_size
         self.country_code = country_code
         self.launch_date = launch_date
+        self.subsection = subsection
 
         self.positions = []
 
@@ -168,6 +170,12 @@ class Model:
 
         df = pd.DataFrame(datadict)
         df.to_csv("output.csv", index=False)
+
+
+    def octree(self, subsection):
+        
+
+        pass
 
     def collision():
         pass
