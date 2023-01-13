@@ -77,7 +77,7 @@ class Object:
         margin_perc: margin of specific subsection, the object falls also
         into the adjacent section.
 
-        returns a list of the orbit number(s) which is in between 0 and
+        returns a list of the orbit number(s) which are numbers between 0 and
         len(subsections).
         """
         # a 10% margin of the subsections
