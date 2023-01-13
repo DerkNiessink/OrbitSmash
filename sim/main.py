@@ -2,7 +2,7 @@ import sys
 import csv
 import ast
 import pandas as pd
-import numpy as np 
+import numpy as np
 
 from model import Object, Model
 from graphics import View
@@ -26,23 +26,6 @@ def view_sim(objects: list[Object]):
 
     view = View(objects)
     view.draw(fps=40)
-
-def octree(objects: list[Object] , subsections = [6542.85, 6904.541, 6925.362, 7024.647, 7127.723, 7189.41, 7243.813, 7388.209], marge = 0.1):
-    
-    subsections.append(8371)
-    # a 10% margin of the subsections 
-    differance = np.diff(subsections) 
-
-    subclass = [i for i in range(8)]
-    margin = differance * marge
-   
-    classes = []
-    for object in objects: 
-        for i in range(len(differance)):
-            if object.semimajor_axis > subsections[i] - margin[i] and object.semimajor_axis < (subsections[i] + differance[i] + margin[i]):
-                classes.append(subclass[i])
-        object.octree = classes
-    return 
 
 
 if __name__ == "__main__":
@@ -71,6 +54,7 @@ if __name__ == "__main__":
             )
             for row in reader
         ]
+
     objects = objects[0:100]
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":

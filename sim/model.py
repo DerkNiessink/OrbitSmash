@@ -23,15 +23,13 @@ class Object:
         rcs_size,
         country_code,
         launch_date,
-        octree
     ):
         """
         Class to model the objects.
         """
 
         # Keplerian orbital elements
-        # time of mean_anomaly
-        self.epoch = epoch
+        self.epoch = epoch  # time of mean_anomaly
         self.mean_motion = mean_motion
         self.eccentricity = eccentricity  # 1
         self.inclination = inclination  # rad
@@ -39,7 +37,9 @@ class Object:
         self.arg_of_pericenter = arg_of_pericenter  # rad
         self.mean_anomaly = mean_anomaly  # rad
         self.norad_cat_id = norad_cat_id
-        self.semimajor_axis = semimajor_axis  # meter, minimum = 6542.85, maximum = 8370.819
+        self.semimajor_axis = (
+            semimajor_axis  # meter, minimum = 654_285_0, maximum = 837_081_9
+        )
         self.period = period
         self.apoapsis = apoapsis
         self.periapsis = periapsis
@@ -47,9 +47,55 @@ class Object:
         self.rcs_size = rcs_size
         self.country_code = country_code
         self.launch_date = launch_date
-        self.octree = octree
+        self.octree = self.init_octree()
 
         self.positions = []
+
+    def init_octree(
+        self,
+        subsections=[
+            654_285_0,
+            690_454_1,
+            692_536_2,
+            702_464_7,
+            712_772_3,
+            718_941_0,
+            724_381_3,
+            738_820_9,
+            837_100_0,
+        ],
+        margin_perc=0.1,
+    ) -> list:
+        """
+        Determine the orbit number of a specific object from a given list of
+        subsections for the semi-major axis. If the semi-major axis of the
+        object falls into the given margin of another section, say that the
+        object falls into both sections.
+
+        subsections: list of distances in meters that correspond to the
+        boundaries of the subsectionsin meters.
+        margin_perc: margin of specific subsection, the object falls also
+        into the adjacent section.
+
+        returns a list of the orbit number(s) which is in between 0 and
+        len(subsections).
+        """
+        # a 10% margin of the subsections
+        differences = np.diff(subsections)
+
+        all_orbit_numbers = [i for i in range(len(subsections))]
+        margin = differences * margin_perc
+
+        orbit_n = []
+        for i in range(len(differences)):
+
+            if self.semimajor_axis > subsections[i] - margin[
+                i
+            ] and self.semimajor_axis < (subsections[i] + differences[i] + margin[i]):
+
+                orbit_n.append(all_orbit_numbers[i])
+
+        return orbit_n
 
 
 class Model:
@@ -68,7 +114,6 @@ class Model:
         mean_anomaly: anomaly corresponding to the object's epoch in rad.
         semimajor_axis: semimajor-axis of the object's orbit in meters.
         """
-
         time_delta = time - epoch  # s
         mean_anomaly = mean_anomaly + time_delta * np.sqrt(
             self.mu / semimajor_axis**3
@@ -139,7 +184,6 @@ class Model:
         objects: list of objects to be calibrated.
         epoch: desired Julian date in seconds.
         """
-
         for object in objects:
             initialized_anomaly = self._calc_new_anomaly(
                 epoch, object.epoch, object.mean_anomaly, object.semimajor_axis
@@ -170,8 +214,6 @@ class Model:
 
         df = pd.DataFrame(datadict)
         df.to_csv("output.csv", index=False)
-
-
 
     def collision():
         pass
