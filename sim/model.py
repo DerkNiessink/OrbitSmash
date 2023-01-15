@@ -3,6 +3,7 @@ from scipy.spatial.transform import Rotation
 import pandas as pd
 from collections import defaultdict
 from itertools import combinations
+from tqdm import tqdm
 
 
 class Object:
@@ -105,6 +106,9 @@ class Model:
     JD = 86400  # s
     mu = 6.6743 * 10**-11 * 5.972 * 10**24  # m**3 * s**-2
 
+    def __init__(self, objects: list[Object]):
+        self.objects = objects
+
     def _calc_new_anomaly(self, time, epoch, mean_anomaly, semimajor_axis):
         """
         Calculate the new anomaly of an object at a specific Julian date in
@@ -177,7 +181,7 @@ class Model:
         )
         return pos
 
-    def initialize_positions(self, objects: list[Object], epoch):
+    def initialize_positions(self, epoch):
         """
         Initialize all objects in the given list to the same given epoch by
         adjusting object's true anomaly.
@@ -185,7 +189,7 @@ class Model:
         objects: list of objects to be calibrated.
         epoch: desired Julian date in seconds.
         """
-        for object in objects:
+        for object in self.objects:
             initialized_anomaly = self._calc_new_anomaly(
                 epoch, object.epoch, object.mean_anomaly, object.semimajor_axis
             )
@@ -193,34 +197,35 @@ class Model:
             object.epoch = epoch
 
     def collision(self, collision_list):
-        #Create new debris
+        # Create new debris
 
         pass
 
-    def _check_for_collisions(self, objects: list[Object]):
+    def _check_collisions(self):
         """
-        Checks for collisions by iterating over all possible combinations, 
-        checking if the objects in the combination share a similar orbit. If 
-        this is the case their closeness will be checked. In the case of a 
+        Checks for collisions by iterating over all possible combinations,
+        checking if the objects in the combination share a similar orbit. If
+        this is the case their closeness will be checked. In the case of a
         collision the involved bodies will be added to a list.
 
         objects: list of all objects to be evaluated for colliding.
         """
         collision_list, collisions = [], False
-        for combo in combinations(objects, 2):
+        for combo in combinations(self.objects, 2):
             object1, object2 = combo
-            if (bool(set(object1.octree) & set(object2.octree))) == True:
-                if str(np.isclose(object1.positions[:], object2.positions[:], rtol=1e-09, atol=2.0))  == "[True,  True,  True]":
-                    collision_list.append[combo]
-                    collisions = True
-        
+            print(object1.positions)
+            if (bool(set(object1.octree) & set(object2.octree))) == True and str(
+                np.isclose(
+                    object1.positions[-1], object2.positions[-1], rtol=1e-09, atol=2.0
+                )
+            ) == "[True,  True,  True]":
+                collision_list.append(combo)
+                collisions = True
+
         self.collision(collision_list)
-        return collisions 
+        return collisions
 
-
-    def calc_all_positions(
-        self, objects: list[Object], endtime, timestep, epoch=1635771601.0
-    ):
+    def calc_all_positions(self, endtime, timestep, epoch=1635771601.0):
         """
         Calculate the new positions of all objects by first initializing all
         positions and save the positions in a csv as "output.csv".
@@ -229,21 +234,19 @@ class Model:
         endtime: how long you want the trial to be.
         timestep: the size of the steps in time.
         """
-        self.initialize_positions(objects, epoch)
+        self.initialize_positions(epoch)
         datadict = defaultdict(list)
 
-        for time in np.arange(epoch, epoch + endtime, timestep):
-            for object in objects:
+        for object in tqdm(self.objects, ncols=100):
+            # tqdm for progress bar.
+
+            for time in np.arange(epoch, epoch + endtime, timestep):
                 new_position = self.new_position(time, object)
                 object.positions.append(tuple(new_position))
 
-            self._check_for_collisions(objects)
+            # self._check_collisions()
             datadict[object.norad_cat_id].append(object.positions)
 
+        print("Saving output...")
         df = pd.DataFrame(datadict)
         df.to_csv("output.csv", index=False)
-
-
-    
-
-

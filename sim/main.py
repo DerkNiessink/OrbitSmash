@@ -10,14 +10,13 @@ from graphics import View
 
 def run_sim(objects: list[Object]):
 
-    model = Model()
-    model.calc_all_positions(objects, 100000, 100)
+    model = Model(objects)
+    model.calc_all_positions(100000, 100)
 
 
 def view_sim(objects: list[Object]):
 
     df = pd.read_csv("output.csv")
-
     for i, object in enumerate(objects):
 
         # Convert string of list to list.
@@ -30,7 +29,7 @@ def view_sim(objects: list[Object]):
 
 if __name__ == "__main__":
 
-    with open("data/satelite2.csv", "r") as f:
+    with open("../data/satelite2.csv", "r") as f:
         reader = csv.reader(f)
         next(reader)
         objects = [
@@ -55,7 +54,7 @@ if __name__ == "__main__":
             for row in reader
         ]
 
-    objects = objects[0:1000]
+    objects = objects[0:100]
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":
         run_sim(objects)
