@@ -237,8 +237,7 @@ class Model:
         self.initialize_positions(epoch)
         datadict = defaultdict(list)
 
-        for object in tqdm(self.objects, ncols=100):
-            # tqdm for progress bar.
+        for object in tqdm(self.objects, ncols=100):  # tqdm for progress bar.
 
             for time in np.arange(epoch, epoch + endtime, timestep):
                 new_position = self.new_position(time, object)
