@@ -2,6 +2,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 import pandas as pd
 from collections import defaultdict
+from itertools import combinations
 
 
 class Object:
@@ -191,6 +192,32 @@ class Model:
             object.mean_anomaly = initialized_anomaly
             object.epoch = epoch
 
+    def collision(self, collision_list):
+        #Create new debris
+
+        pass
+
+    def _check_for_collisions(self, objects: list[Object]):
+        """
+        Checks for collisions by iterating over all possible combinations, 
+        checking if the objects in the combination share a similar orbit. If 
+        this is the case their closeness will be checked. In the case of a 
+        collision the involved bodies will be added to a list.
+
+        objects: list of all objects to be evaluated for colliding.
+        """
+        collision_list, collisions = [], False
+        for combo in combinations(objects, 2):
+            object1, object2 = combo
+            if (bool(set(object1.octree) & set(object2.octree))) == True:
+                if str(np.isclose(object1.positions[:], object2.positions[:], rtol=1e-09, atol=2.0))  == "[True,  True,  True]":
+                    collision_list.append[combo]
+                    collisions = True
+        
+        self.collision(collision_list)
+        return collisions 
+
+
     def calc_all_positions(
         self, objects: list[Object], endtime, timestep, epoch=1635771601.0
     ):
@@ -205,15 +232,18 @@ class Model:
         self.initialize_positions(objects, epoch)
         datadict = defaultdict(list)
 
-        for object in objects:
-            for time in np.arange(object.epoch, object.epoch + endtime, timestep):
+        for time in np.arange(epoch, epoch + endtime, timestep):
+            for object in objects:
                 new_position = self.new_position(time, object)
                 object.positions.append(tuple(new_position))
 
+            self._check_for_collisions(objects)
             datadict[object.norad_cat_id].append(object.positions)
 
         df = pd.DataFrame(datadict)
         df.to_csv("output.csv", index=False)
 
-    def collision():
-        pass
+
+    
+
+
