@@ -13,6 +13,7 @@ class Object:
     # maximum and minimum semi-major axes of LEO
     min_R = 654_285_0
     max_R = 837_100_0
+    max_norad_cat_id = 270288
 
     def __init__(
         self,
@@ -195,7 +196,7 @@ class Model:
         """ """
 
         # Create new debris
-        max_norad_cat_id = 270288
+       
         if self._check_collosion == True:
 
             for collision in collision_list:
@@ -212,7 +213,7 @@ class Model:
                         object.rsc_size == "MEDIUM"
 
                     # new id per new object
-                    max_norad_cat_id += 1
+                    self.max_norad_cat_id += 1
 
                     # calculate new inclination
                     new_inclination = object.inclination + random.sample(
@@ -232,7 +233,7 @@ class Model:
                             object.ra_of_asc_node,
                             object.arg_of_pericenter,
                             object.mean_anomaly,
-                            max_norad_cat_id,
+                            self.max_norad_cat_id,
                             object.semimajor_axis,
                             object.period,
                             object.apoapsis,
@@ -270,6 +271,40 @@ class Model:
         self.collision(collision_list)
         return collisions
 
+    def add_satellites(self, current_year, new_satellites = 50):
+        self.max_norad_cat_id += 1
+
+        new_mean_anomaly = object.mean_anomaly + 180
+        if new_mean_anomaly > 360:
+            new_mean_anomaly -= 360
+
+        launch_date = current_year
+
+        number_of_new_satellites = np.random.normal(loc=new_satellites, scale=new_satellites*0.2)
+
+        for _ in range(0, number_of_new_satellites):
+            object = np.random.choice(self.objects)
+        
+            self.objects.append(Object(
+            object.epoch,
+            object.mean_motion,
+            object.eccentricity,
+            object.inclination,
+            object.ra_of_asc_node,
+            object.arg_of_pericenter,
+            new_mean_anomaly,
+            self.max_norad_cat_id,
+            object.semimajor_axis,
+            object.period,
+            object.apoapsis,
+            object.periapsis,
+            object.object_type,
+            object.rcs_size,
+            object.country_code,
+            launch_date,
+        )
+        )
+        
     def remove_objects(self, time_removing, frequency= 10 , average_lifespan = 20):
 
         deleted_objects = 0 
@@ -286,7 +321,7 @@ class Model:
         
         return 
 
-    def calc_all_positions(self, endtime, timestep, begin_year, epoch=1635771601.0): 
+    def calc_all_positions(self, endtime, timestep, begin_year=2021, epoch=1635771601.0): 
         """
         Calculate the new positions of all objects by first initializing all
         positions and save the positions in a csv as "output.csv".
@@ -313,6 +348,7 @@ class Model:
                 if time % 31556926 == 0: 
                     if time_removing == begin_year: 
                         self.remove_objects(time_removing)
+                        self.add_satellites(time_removing)
                     time_removing += 1
 
         self.save_objects()
