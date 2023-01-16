@@ -192,8 +192,9 @@ class Model:
             object.epoch = epoch
 
     def collision(self, collision_list):
-        # Create new debris
+        """ """
 
+        # Create new debris
         max_norad_cat_id = 270288
         if self._check_collosion == True:
 
@@ -269,7 +270,13 @@ class Model:
         self.collision(collision_list)
         return collisions
 
-    def calc_all_positions(self, endtime, timestep, epoch=1635771601.0):
+    def remove_objects(self, begintime, frequency = , average_lifespan):
+
+        # nu moet de fequentie uit objectenlijst worden gehaald. 
+        
+        return 
+
+    def calc_all_positions(self, endtime, timestep, begin_time_removing, epoch=1635771601.0):
         """
         Calculate the new positions of all objects by first initializing all
         positions and save the positions in a csv as "output.csv".
@@ -279,6 +286,7 @@ class Model:
         timestep: the size of the steps in time.
         """
         self.initialize_positions(epoch)
+        time_removing = 0
 
         for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
 
@@ -287,6 +295,13 @@ class Model:
                 object.positions.append(tuple(new_position))
 
                 # self._check_collisions()
+
+                """ HIER KOMT REMOVE SATELLITE + NEW SATELLITE?"""
+                # wordt elk jaar aangeroepen
+                if time % 31556926 == 0: 
+                    time_removing += 1
+                    if begintime == begin_time_removing: 
+                        self.remove_objects(begintime, frequency,  )
 
         self.save_objects()
 
