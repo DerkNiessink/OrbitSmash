@@ -5,6 +5,7 @@ from collections import defaultdict
 from itertools import combinations
 from tqdm import tqdm
 import pickle
+import random
 
 
 class Object:
@@ -193,7 +194,56 @@ class Model:
     def collision(self, collision_list):
         # Create new debris
 
-        pass
+        max_norad_cat_id = 270288
+        if self._check_collosion == True:
+
+            for collision in collision_list:
+
+                for object in collision:
+
+                    # object is nu debris
+                    object.object_type = "DEBRIS"
+
+                    # aanpassen size
+                    if object.rsc_size == "MEDIUM":
+                        object.rsc_size = "SMALL"
+                    elif object.rsc_size == "LARGE":
+                        object.rsc_size == "MEDIUM"
+
+                    # new id per new object
+                    max_norad_cat_id += 1
+
+                    # calculate new inclination
+                    new_inclination = object.inclination + random.sample(
+                        [-3, -2, -1, 1, 2, 3]
+                    )
+                    if new_inclination > 180:
+                        new_inclination -= 180
+                    if new_inclination < 0:
+                        new_inclination += 180
+
+                    self.objects.append(
+                        Object(
+                            object.epoch,
+                            object.mean_motion,
+                            object.eccentricity,
+                            new_inclination,
+                            object.ra_of_asc_node,
+                            object.arg_of_pericenter,
+                            object.mean_anomaly,
+                            max_norad_cat_id,
+                            object.semimajor_axis,
+                            object.period,
+                            object.apoapsis,
+                            object.periapsis,
+                            object.object_type,
+                            object.rcs_size,
+                            object.country_code,
+                            object.launch_date,
+                        )
+                    )
+
+        return
 
     def _check_collisions(self):
         """
