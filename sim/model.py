@@ -230,7 +230,7 @@ class Model:
         self.initialize_positions(epoch)
         datadict = defaultdict(list)
         norad = []
-        
+
         for object in tqdm(self.objects, ncols=100):  # tqdm for progress bar.
             time_for_dict = 0
 
@@ -238,14 +238,14 @@ class Model:
                 new_position = self.new_position(time, object)
                 object.positions.append(tuple(new_position))
 
-             # self._check_collisions()
+            # self._check_collisions()
 
             datadict[time_for_dict] = object.positions
             time_for_dict += timestep
-            
+
             norad.append(object.norad_cat_id)
 
         print("Saving output...")
-        
-        df = pd.DataFrame(datadict, index= norad)
+
+        df = pd.DataFrame(datadict, index=norad)
         df.to_csv("output.csv", index=False)
