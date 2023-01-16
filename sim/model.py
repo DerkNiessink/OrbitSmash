@@ -4,6 +4,7 @@ import pandas as pd
 from collections import defaultdict
 from itertools import combinations
 from tqdm import tqdm
+import pickle
 
 
 class Object:
@@ -228,24 +229,23 @@ class Model:
         timestep: the size of the steps in time.
         """
         self.initialize_positions(epoch)
-        datadict = defaultdict(list)
-        norad = []
 
-        for object in tqdm(self.objects, ncols=100):  # tqdm for progress bar.
-            time_for_dict = 0
+        for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
 
-            for time in np.arange(epoch, epoch + endtime, timestep):
+            for object in self.objects:  # tqdm for progress bar.
                 new_position = self.new_position(time, object)
                 object.positions.append(tuple(new_position))
 
-            # self._check_collisions()
+                # self._check_collisions()
 
-            datadict[time_for_dict] = object.positions
-            time_for_dict += timestep
+        self.save_objects()
 
-            norad.append(object.norad_cat_id)
+    def save_objects(self):
+        """
+        Save the objects as "output.dat" using pickles.
+        """
 
         print("Saving output...")
-
-        df = pd.DataFrame(datadict, index=norad)
-        df.to_csv("output.csv", index=False)
+        with open("output.dat", "wb") as f:
+            for object in self.objects:
+                pickle.dump(object, f)
