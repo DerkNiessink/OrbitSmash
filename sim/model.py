@@ -270,13 +270,23 @@ class Model:
         self.collision(collision_list)
         return collisions
 
-    def remove_objects(self, begintime, frequency = , average_lifespan):
+    def remove_objects(self, time_removing, frequency= 10 , average_lifespan = 20):
 
+        deleted_objects = 0 
         # nu moet de fequentie uit objectenlijst worden gehaald. 
+        for object in self.objects:
+            try: 
+                if object.rcs_size == 'LARGE' and (time_removing - object.launch_date ) > average_lifespan \
+                    and deleted_objects < frequency:
+                    # delete this object x times 
+                    self.objects.remove(object)
+                    deleted_objects += 1 
+            except:
+                pass
         
         return 
 
-    def calc_all_positions(self, endtime, timestep, begin_time_removing, epoch=1635771601.0):
+    def calc_all_positions(self, endtime, timestep, begin_year, epoch=1635771601.0): 
         """
         Calculate the new positions of all objects by first initializing all
         positions and save the positions in a csv as "output.csv".
@@ -284,10 +294,12 @@ class Model:
         objects: list of objects to be evaluated.
         endtime: how long you want the trial to be.
         timestep: the size of the steps in time.
+
+        epoch: Monday 1 November 2021 13:00:01
         """
         self.initialize_positions(epoch)
-        time_removing = 0
 
+        time_removing = 2021
         for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
 
             for object in self.objects:  # tqdm for progress bar.
@@ -299,9 +311,9 @@ class Model:
                 """ HIER KOMT REMOVE SATELLITE + NEW SATELLITE?"""
                 # wordt elk jaar aangeroepen
                 if time % 31556926 == 0: 
+                    if time_removing == begin_year: 
+                        self.remove_objects(time_removing)
                     time_removing += 1
-                    if begintime == begin_time_removing: 
-                        self.remove_objects(begintime, frequency,  )
 
         self.save_objects()
 
