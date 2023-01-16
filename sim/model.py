@@ -7,6 +7,11 @@ from tqdm import tqdm
 
 
 class Object:
+
+    # maximum and minimum semi-major axes of LEO
+    min_R = 654_285_0
+    max_R = 837_100_0
+
     def __init__(
         self,
         epoch,
@@ -39,9 +44,7 @@ class Object:
         self.arg_of_pericenter = arg_of_pericenter  # rad
         self.mean_anomaly = mean_anomaly  # rad
         self.norad_cat_id = norad_cat_id
-        self.semimajor_axis = (
-            semimajor_axis  # meter, minimum = 654_285_0, maximum = 837_081_9
-        )
+        self.semimajor_axis = semimajor_axis
         self.period = period
         self.apoapsis = apoapsis
         self.periapsis = periapsis
@@ -49,40 +52,30 @@ class Object:
         self.rcs_size = rcs_size
         self.country_code = country_code
         self.launch_date = launch_date
-        self.octree = self.init_octree()
+        self.space = self.init_space()
 
         self.positions = []
 
-    def init_octree(
+    def init_space(
         self,
-        subsections=[
-            654_285_0,
-            690_454_1,
-            692_536_2,
-            702_464_7,
-            712_772_3,
-            718_941_0,
-            724_381_3,
-            738_820_9,
-            837_100_0,
-        ],
+        n_spaces=100,
         margin_perc=0.1,
     ) -> list:
         """
-        Determine the orbit number of a specific object from a given list of
-        subsections for the semi-major axis. If the semi-major axis of the
-        object falls into the given margin of another section, say that the
-        object falls into both sections.
+        Determine the orbit number of a specific object from a given number of
+        subsections. If the semi-major axis of the object falls into the given
+        margin of another section, say that the object falls into both sections.
 
-        subsections: list of distances in meters that correspond to the
-        boundaries of the subsectionsin meters.
+        n_spaces: number of subsections.
         margin_perc: margin of specific subsection, the object falls also
         into the adjacent section.
 
         returns a list of the orbit number(s) which are numbers between 0 and
         len(subsections).
         """
+
         # a 10% margin of the subsections
+        subsections = np.linspace(self.min_R, self.max_R, n_spaces)
         differences = np.diff(subsections)
 
         all_orbit_numbers = [i for i in range(len(subsections))]
