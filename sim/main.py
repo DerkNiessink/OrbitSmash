@@ -29,7 +29,7 @@ def view_sim(objects: list[Object]):
 
 if __name__ == "__main__":
 
-    with open("../data/satelite2.csv", "r") as f:
+    with open("data/satelite2.csv", "r") as f:
         reader = csv.reader(f)
         next(reader)
         objects = [
