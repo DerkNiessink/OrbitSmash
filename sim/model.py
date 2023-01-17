@@ -19,20 +19,14 @@ class Object:
     def __init__(
         self,
         epoch,
-        mean_motion,
-        eccentricity,
         inclination,
         ra_of_asc_node,
         arg_of_pericenter,
         mean_anomaly,
         norad_cat_id,
         semimajor_axis,
-        period,
-        apoapsis,
-        periapsis,
         object_type,
         rcs_size,
-        country_code,
         launch_date,
     ):
         """
@@ -41,24 +35,18 @@ class Object:
 
         # Keplerian orbital elements
         self.epoch = epoch  # time of mean_anomaly
-        self.mean_motion = mean_motion
-        self.eccentricity = eccentricity  # 1
         self.inclination = inclination  # rad
         self.ra_of_asc_node = ra_of_asc_node  # rad
         self.arg_of_pericenter = arg_of_pericenter  # rad
         self.mean_anomaly = mean_anomaly  # rad
         self.norad_cat_id = norad_cat_id
         self.semimajor_axis = semimajor_axis
-        self.period = period
-        self.apoapsis = apoapsis
-        self.periapsis = periapsis
         self.object_type = object_type
         self.rcs_size = rcs_size
-        self.country_code = country_code
         self.launch_date = launch_date
         self.space = self.init_space()
 
-        self.positions = []
+        self.positions = tuple()
 
     def init_space(
         self,
@@ -228,20 +216,14 @@ class Model:
                     self.objects.append(
                         Object(
                             object.epoch,
-                            object.mean_motion,
-                            object.eccentricity,
                             new_inclination,
                             object.ra_of_asc_node,
                             object.arg_of_pericenter,
                             object.mean_anomaly,
                             self.max_norad_cat_id,
                             object.semimajor_axis,
-                            object.period,
-                            object.apoapsis,
-                            object.periapsis,
                             object.object_type,
                             object.rcs_size,
-                            object.country_code,
                             object.launch_date,
                         )
                     )
@@ -263,7 +245,7 @@ class Model:
             print(object1.positions)
             if (bool(set(object1.octree) & set(object2.octree))) == True and str(
                 np.isclose(
-                    object1.positions[-1], object2.positions[-1], rtol=1e-09, atol=2.0
+                    object1.positions, object2.positions, rtol=1e-09, atol=2.0
                 )
             ) == "[True,  True,  True]":
                 collision_list.append(combo)
@@ -297,20 +279,14 @@ class Model:
             self.objects.append(
                 Object(
                     object.epoch,
-                    object.mean_motion,
-                    object.eccentricity,
                     object.inclination,
                     object.ra_of_asc_node,
                     object.arg_of_pericenter,
                     new_mean_anomaly,
                     self.max_norad_cat_id,
                     object.semimajor_axis,
-                    object.period,
-                    object.apoapsis,
-                    object.periapsis,
                     object.object_type,
                     object.rcs_size,
-                    object.country_code,
                     launch_date,
                 )
             )
@@ -354,7 +330,7 @@ class Model:
 
             for object in self.objects:  # tqdm for progress bar.
                 new_position = self.new_position(time, object)
-                object.positions.append(tuple(new_position))
+                object.positions = tuple(new_position)
 
                 # self._check_collisions()
 
