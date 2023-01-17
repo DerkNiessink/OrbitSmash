@@ -6,6 +6,7 @@ from itertools import combinations
 from tqdm import tqdm
 import pickle
 import random
+from numba import njit 
 
 
 class Object:
@@ -286,6 +287,7 @@ class Model:
         
         return 
 
+
     def calc_all_positions(self, endtime, timestep, begin_year, epoch=1635771601.0): 
         """
         Calculate the new positions of all objects by first initializing all
@@ -308,13 +310,12 @@ class Model:
 
                 # self._check_collisions()
 
-                """ HIER KOMT REMOVE SATELLITE + NEW SATELLITE?"""
+                """ HIER KOMT REMOVE SATELLITE + NEW SATELLITE """
                 # wordt elk jaar aangeroepen
                 if time % 31556926 == 0: 
                     if time_removing == begin_year: 
                         self.remove_objects(time_removing)
                     time_removing += 1
-
         self.save_objects()
 
     def save_objects(self):
