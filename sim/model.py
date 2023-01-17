@@ -103,7 +103,7 @@ class Model:
     JD = 86400  # s
     mu = 6.6743 * 10**-11 * 5.972 * 10**24  # m**3 * s**-2
 
-    def __init__(self, objects: list[Object]):
+    def __init__(self, objects: list[Object]): # wordt een numpy 
         self.objects = objects
 
     def _calc_new_anomaly(self, time, epoch, mean_anomaly, semimajor_axis):

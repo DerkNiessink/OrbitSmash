@@ -2,13 +2,15 @@ import sys
 import csv
 import ast
 import pickle
+import numpy as np
 
 from model import Object, Model
 from graphics import View
+from data_cleaning import data_array
 
 
-def run_sim(objects: list[Object]):
-
+def run_sim(data_array):
+    objects = data_array
     model = Model(objects)
     model.calc_all_positions(100000, 100)
 
@@ -32,32 +34,7 @@ def view_sim(objects: list[Object]):
 
 
 if __name__ == "__main__":
-
-    with open("data/satelite2.csv", "r") as f:
-        reader = csv.reader(f)
-        next(reader)
-        objects = [
-            Object(
-                float(row[0]),
-                float(row[1]),
-                float(row[2]),
-                float(row[3]),
-                float(row[4]),
-                float(row[5]),
-                float(row[6]),
-                row[7],
-                float(row[8]) * 1000,  # convert to meters
-                float(row[9]),
-                float(row[10]),
-                float(row[11]),
-                row[12],
-                row[13],
-                row[14],
-                row[15],
-            )
-            for row in reader
-        ]
-
+    objects = data_array
     objects = objects[0:100]
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":
