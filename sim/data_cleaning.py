@@ -30,9 +30,12 @@ def epoch(df_column):
 # only selecting data in LEO 
 dataset = dataset[dataset['SEMIMAJOR_AXIS'] < 8371]
 dataset['EPOCH'] = epoch(dataset['EPOCH'])
+dataset['tuples'] = [(0,0,0) for i in range(len(dataset.index))]
+
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
 
-print(data_array[0:100])
+
+
 

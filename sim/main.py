@@ -4,16 +4,33 @@ import ast
 import pickle
 import numpy as np
 
-from model import Object, Model
+from model_kopie import Model
 from graphics import View
 from data_cleaning import data_array
 
 
-def run_sim(data_array):
+def run_sim(data_array:np.ndarray):
     objects = data_array
     model = Model(objects)
     model.calc_all_positions(100000, 100)
 
+def initialize_positions(data_array, epoch = 1635771601.0):
+        """
+        Initialize all objects in the given list to the same given epoch by
+        adjusting object's true anomaly.
+
+        objects: list of objects to be calibrated.
+        epoch: desired Julian date in seconds.
+        """
+    
+        for object in data_array:
+            time_delta = epoch - object[0]  # s
+            initialized_anomaly = object[4] + time_delta * np.sqrt(
+            6.6743 * 10**-11 * 5.972 * 10**24  / object[6] ** 3
+            )
+            object[4] = initialized_anomaly
+            object[0]= epoch
+ 
 
 def load_objects(filename):
     with open(filename, "rb") as f:
@@ -24,7 +41,7 @@ def load_objects(filename):
                 break
 
 
-def view_sim(objects: list[Object]):
+def view_sim(objects):
 
     objects = load_objects("output.dat")  # Gives a generators
     objects_list = [object for object in objects]

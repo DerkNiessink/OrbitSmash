@@ -17,4 +17,4 @@ def octree(objects = [6904, 7120, 8000] , subsections = [6542.85, 6904.541, 6925
                 classes.append(subclass[i])
         object.semimajor_axis = classes
     return 
-print(octree())
+
