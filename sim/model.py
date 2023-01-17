@@ -272,18 +272,20 @@ class Model:
         return collisions
 
     def add_satellites(self, current_year, new_satellites = 50):
-        self.max_norad_cat_id += 1
-
-        new_mean_anomaly = object.mean_anomaly + 180
-        if new_mean_anomaly > 360:
-            new_mean_anomaly -= 360
-
         launch_date = current_year
 
         number_of_new_satellites = np.random.normal(loc=new_satellites, scale=new_satellites*0.2)
 
         for _ in range(0, number_of_new_satellites):
             object = np.random.choice(self.objects)
+
+            self.max_norad_cat_id += 1
+
+            new_mean_anomaly = object.mean_anomaly + 180
+            if new_mean_anomaly > 360:
+                new_mean_anomaly -= 360
+
+            
         
             self.objects.append(Object(
             object.epoch,
