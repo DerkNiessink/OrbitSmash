@@ -288,6 +288,12 @@ class Model:
         for _ in range(0, number_of_new_satellites):
             object = np.random.choice(self.objects)
 
+            self.max_norad_cat_id += 1
+
+            new_mean_anomaly = object.mean_anomaly + 180
+            if new_mean_anomaly > 360:
+                new_mean_anomaly -= 360
+
             self.objects.append(
                 Object(
                     object.epoch,
