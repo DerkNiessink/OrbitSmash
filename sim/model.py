@@ -6,7 +6,7 @@ from itertools import combinations
 from tqdm import tqdm
 import pickle
 import random
-from numba import njit 
+from numba import njit
 
 
 class Object:
@@ -197,7 +197,7 @@ class Model:
         """ """
 
         # Create new debris
-       
+
         if self._check_collosion == True:
 
             for collision in collision_list:
@@ -272,7 +272,7 @@ class Model:
         self.collision(collision_list)
         return collisions
 
-    def add_satellites(self, current_year, new_satellites = 50):
+    def add_satellites(self, current_year, new_satellites=50):
         self.max_norad_cat_id += 1
 
         new_mean_anomaly = object.mean_anomaly + 180
@@ -281,48 +281,56 @@ class Model:
 
         launch_date = current_year
 
-        number_of_new_satellites = np.random.normal(loc=new_satellites, scale=new_satellites*0.2)
+        number_of_new_satellites = np.random.normal(
+            loc=new_satellites, scale=new_satellites * 0.2
+        )
 
         for _ in range(0, number_of_new_satellites):
             object = np.random.choice(self.objects)
-        
-            self.objects.append(Object(
-            object.epoch,
-            object.mean_motion,
-            object.eccentricity,
-            object.inclination,
-            object.ra_of_asc_node,
-            object.arg_of_pericenter,
-            new_mean_anomaly,
-            self.max_norad_cat_id,
-            object.semimajor_axis,
-            object.period,
-            object.apoapsis,
-            object.periapsis,
-            object.object_type,
-            object.rcs_size,
-            object.country_code,
-            launch_date,
-        )
-        )
-        
-    def remove_objects(self, time_removing, frequency= 10 , average_lifespan = 20):
 
-        deleted_objects = 0 
-        # nu moet de fequentie uit objectenlijst worden gehaald. 
+            self.objects.append(
+                Object(
+                    object.epoch,
+                    object.mean_motion,
+                    object.eccentricity,
+                    object.inclination,
+                    object.ra_of_asc_node,
+                    object.arg_of_pericenter,
+                    new_mean_anomaly,
+                    self.max_norad_cat_id,
+                    object.semimajor_axis,
+                    object.period,
+                    object.apoapsis,
+                    object.periapsis,
+                    object.object_type,
+                    object.rcs_size,
+                    object.country_code,
+                    launch_date,
+                )
+            )
+
+    def remove_objects(self, time_removing, frequency=10, average_lifespan=20):
+
+        deleted_objects = 0
+        # nu moet de fequentie uit objectenlijst worden gehaald.
         for object in self.objects:
-            try: 
-                if object.rcs_size == 'LARGE' and (time_removing - object.launch_date ) > average_lifespan \
-                    and deleted_objects < frequency:
-                    # delete this object x times 
+            try:
+                if (
+                    object.rcs_size == "LARGE"
+                    and (time_removing - object.launch_date) > average_lifespan
+                    and deleted_objects < frequency
+                ):
+                    # delete this object x times
                     self.objects.remove(object)
-                    deleted_objects += 1 
+                    deleted_objects += 1
             except:
                 pass
-        
-        return 
 
-    def calc_all_positions(self, endtime, timestep, begin_year, epoch=1635771601.0): 
+        return
+
+    def calc_all_positions(
+        self, endtime, timestep, begin_year=2030, epoch=1635771601.0
+    ):
         """
         Calculate the new positions of all objects by first initializing all
         positions and save the positions in a csv as "output.csv".
@@ -346,11 +354,14 @@ class Model:
 
                 """ HIER KOMT REMOVE SATELLITE + NEW SATELLITE """
                 # wordt elk jaar aangeroepen
-                if time % 31556926 == 0: 
-                    if time_removing == begin_year: 
+                """
+                if time % 31556926 == 0:
+                    if time_removing == begin_year:
                         self.remove_objects(time_removing)
                         self.add_satellites(time_removing)
                     time_removing += 1
+                """
+
         self.save_objects()
 
     def save_objects(self):
