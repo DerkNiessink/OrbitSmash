@@ -38,15 +38,17 @@ def run_sim(
 
     for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
         calc_all_positions(objects_fast, matrices, time)
+        """
         if check_collisions(objects_fast):
             print("!!!!!!!!!")
+        """
 
         if draw:
             view.draw(objects_fast)
 
 
 if __name__ == "__main__":
-    objects = data_array[0:100]
+    objects = data_array
     view = False
 
     if len(sys.argv) > 1 and sys.argv[1] == "view":
