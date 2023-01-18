@@ -18,3 +18,7 @@ def octree(objects = [6904, 7120, 8000] , subsections = [6542.85, 6904.541, 6925
         object.semimajor_axis = classes
     return 
 
+x = np.arange(35).reshape(5, 7)
+print(x)
+b = x[:,6] == 20
+print(x[b])
