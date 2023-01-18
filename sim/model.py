@@ -125,7 +125,7 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, margin=100.0, group=6):
+def check_collisions(objects: np.ndarray, margin=100.0):
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
@@ -137,17 +137,15 @@ def check_collisions(objects: np.ndarray, margin=100.0, group=6):
 
     returns a generator of tuples of the two candidate colliding objects.
     """
-    group_selection = objects[:, 12] == group
 
-    for i in range(len(objects[group_selection])):
-        for j in range(len(objects[group_selection])):
-            if i != j:
+    for i in range(len(objects) - 1):
+        for j in range(i + 1, len(objects)):
 
-                pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
-                pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
+            pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
+            pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
 
-                if np.linalg.norm(pos1 - pos2) < margin:
-                    return (objects[i], objects[j])
+            if np.linalg.norm(pos1 - pos2) < margin:
+                return (objects[i], objects[j])
 
 
 def zoom_collision(objects: np.ndarray, epoch, margin=1000):
