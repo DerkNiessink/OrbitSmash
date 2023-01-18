@@ -1,7 +1,7 @@
 import numpy as np
 import random
 from numba import jit
-
+from numba.cuda.random import xoroshiro128p_uniform_float32
 
 """
 
@@ -125,7 +125,7 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, margin=100.0*10**10):
+def check_collisions(objects: np.ndarray, margin=100.0):
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
@@ -145,19 +145,18 @@ def check_collisions(objects: np.ndarray, margin=100.0*10**10):
             pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
 
             if np.linalg.norm(pos1 - pos2) < margin:
-                print("collision")
-                return (objects[i], objects[j])
+                collision(objects, objects[i], objects[j])
 
 
 def zoom_collision(objects: np.ndarray, epoch, margin=1000):
     pass
 
-
-def collision(objects: np.ndarray, collision_tuple):
+@jit(nopython=True)
+def collision(objects: np.ndarray, object_involved1, object_involved2):
     """ """
 
     # Create new debris
-    for object in collision_tuple:
+    for object in [object_involved1, object_involved2]:
 
         # # object is nu debris
         # object[7] = "DEBRIS"
@@ -172,7 +171,8 @@ def collision(objects: np.ndarray, collision_tuple):
         # max_norad_cat_id += 1
         
         # calculate new inclination
-        new_inclination = object[5] + random.sample([-3, -2, -1, 1, 2, 3], k=1)
+        g = np.random.rand()
+        new_inclination = object[5] + ((g*6)-3)
         if new_inclination > 180:
             new_inclination -= 180
         if new_inclination < 0:
