@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import datetime
 from scipy.spatial.transform import Rotation
 
@@ -62,7 +63,9 @@ def epoch(df_column):
 
 
 # only selecting data in LEO
+dataset = dataset.sort_values('SEMIMAJOR_AXIS')
 dataset = dataset[dataset["SEMIMAJOR_AXIS"] < 8371]
+dataset['MEAN_ANOMALY'] = dataset['MEAN_ANOMALY'] * np.pi / 180
 dataset["EPOCH"] = epoch(dataset["EPOCH"])
 dataset["tuples"] = [(0, 0, 0) for i in range(len(dataset.index))]
 dataset["SEMIMAJOR_AXIS"] = dataset["SEMIMAJOR_AXIS"].apply(
@@ -80,5 +83,14 @@ for index, row in dataset.iterrows():
 
 dataset["rotation_matrix"] = matrices
 
+""" Groepen aanmaken """
+linspace = np.linspace(min(dataset['SEMIMAJOR_AXIS']), max(dataset["SEMIMAJOR_AXIS"]), num= 100)
+bins = np.digitize(np.array(dataset['SEMIMAJOR_AXIS']),linspace,right=False)
+dataset['groups'] = bins
+groups = dataset.groupby('groups')['groups'].count() != 1
+print(groups)
+
+
 # Dataset to numpy array
 data_array = dataset.to_numpy()
+
