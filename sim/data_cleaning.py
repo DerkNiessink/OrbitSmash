@@ -96,7 +96,7 @@ delet = list(group.loc[group == False].index)
 
 dataset = dataset[~dataset["groups"].isin(delet)]
 
-data_debris = dataset.loc[dataset['OBJECT_TYPE']  == 'DEBRIS']
+data_debris = dataset.loc[dataset["OBJECT_TYPE"] == "DEBRIS"]
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
@@ -107,4 +107,3 @@ group_selection_debris = data_array_debris[:, 12] == 21
 
 data_array_group21 = data_array[group_selection]
 data_array_debris_group21 = data_array_debris[group_selection_debris]
-

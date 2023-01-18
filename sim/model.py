@@ -125,27 +125,28 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, margin=100.0):
+def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
 
     objects: array of objects to be evaluated, which has to be in following form
      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
-    margin: say that there could be a collision when difference off the x, y
+    margin: say that there could be a collision when difference of the x, y
     and z coordinates is smaller than this margin.
 
     returns a generator of tuples of the two candidate colliding objects.
     """
 
     for i in range(len(objects) - 1):
-        for j in range(i + 1, len(objects)):
+        for j in range(len(debris)):
+            if debris[1] != objects[1]:
 
-            pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
-            pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
+                pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
+                pos2 = np.array([debris[j][3], debris[j][4], debris[j][5]])
 
-            if np.linalg.norm(pos1 - pos2) < margin:
-                return (objects[i], objects[j])
+                if np.linalg.norm(pos1 - pos2) < margin:
+                    yield (objects[i], objects[j])
 
 
 def zoom_collision(objects: np.ndarray, epoch, margin=1000):
