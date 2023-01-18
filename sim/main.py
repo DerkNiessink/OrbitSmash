@@ -15,18 +15,7 @@ def fast_arr(objects: np.ndarray):
       -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
     """
     return np.array(
-        [
-            [
-                object[0],
-                object[4],
-                object[6],
-                0,
-                0,
-                0,
-                object[1]
-            ]
-            for object in objects
-        ]
+        [[object[0], object[4], object[6], 0, 0, 0, object[1]] for object in objects]
     )
 
 
@@ -55,7 +44,6 @@ def run_sim(
     for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
         calc_all_positions(objects_fast, matrices, time)
         check_collisions(objects_fast, debris_fast)
-
 
         if draw:
             view.draw(objects_fast)

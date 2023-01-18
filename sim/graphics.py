@@ -8,7 +8,7 @@ class View:
     def __init__(self, objects: np.ndarray):
         self.objects = objects
         self.Earth = sphere(pos=vector(0, 0, 0), radius=self.RE, texture=textures.earth)
-        self.Earth.rotate(angle=pi / 2)
+        # self.Earth.rotate(angle=0.5 * pi, axis=vector(1, 0, 0))
         scene.width, scene.height = 1900, 980
         self.drawables = self._make_drawables()
 

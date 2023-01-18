@@ -1,7 +1,6 @@
 import numpy as np
 import random
-from numba import jit
-from numba.cuda.random import xoroshiro128p_uniform_float32
+from numba import jit, njit
 
 """
 
@@ -137,16 +136,15 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
 
     returns a generator of tuples of the two candidate colliding objects.
     """
-
     for i in range(len(objects) - 1):
         for j in range(len(debris)):
-            if debris[1] != objects[1]:
+            if debris[j][1] != objects[i][1]:
 
                 pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
                 pos2 = np.array([debris[j][3], debris[j][4], debris[j][5]])
 
-            if np.linalg.norm(pos1 - pos2) < margin:
-                collision(objects, objects[i], objects[j])
+                if np.linalg.norm(pos1 - pos2) < margin:
+                    collision(objects, objects[i], debris[j])
 
 
 def zoom_collision(objects: np.ndarray, epoch, margin=1000):
@@ -154,23 +152,13 @@ def zoom_collision(objects: np.ndarray, epoch, margin=1000):
 
 
 @jit(nopython=True)
-def collision(objects: np.ndarray, object_involved1, object_involved2):
+def collision(
+    objects: np.ndarray, object_involved1: np.ndarray, object_involved2: np.ndarray
+):
     """ """
 
     # Create new debris
     for object in [object_involved1, object_involved2]:
-
-        # # object is nu debris
-        # object[7] = "DEBRIS"
-
-        # # aanpassen size
-        # if object[8] == "MEDIUM":
-        #     object[8] = "SMALL"
-        # elif object[8] == "LARGE":
-        #     object[8] == "MEDIUM"
-
-        # # new id per new object
-        # max_norad_cat_id += 1
 
         # calculate new inclination
         g = np.random.rand()
