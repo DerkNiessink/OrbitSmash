@@ -1,5 +1,4 @@
 import numpy as np
-from itertools import combinations
 import random
 from numba import jit
 
@@ -99,18 +98,46 @@ def calc_all_positions(
             rotation_matrix=matrices[i],
         )
         objects[i][3], objects[i][4], objects[i][5] = pos[0], pos[1], pos[2]
-        """
-            # self._check_collisions()
 
-            HIER KOMT REMOVE SATELLITE + NEW SATELLITE
-            # wordt elk jaar aangeroepen
-            time_removing = 2021
-            if time % 31556926 == 0:
-                if time_removing == begin_year:
-                    self.remove_objects(time_removing)
-                    self.add_satellites(time_removing)
-                time_removing += 1
-            """
+        """
+        HIER KOMT REMOVE SATELLITE + NEW SATELLITE
+        # wordt elk jaar aangeroepen
+        time_removing = 2021
+        if time % 31556926 == 0:
+            if time_removing == begin_year:
+                self.remove_objects(time_removing)
+                self.add_satellites(time_removing)
+            time_removing += 1
+        """
+
+
+@jit(nopython=True)
+def check_collisions(objects: np.ndarray):
+    """
+    Checks for collisions by iterating over all possible combinations,
+    checking if the objects in the combination share a similar orbit. If
+    this is the case their closeness will be checked. In the case of a
+    collision the involved bodies will be added to a list.
+
+    objects: list of all objects to be evaluated for colliding.
+    """
+
+    for i in range(len(objects)):
+        for j in range(len(objects)):
+            if i != j:
+
+                pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
+                pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
+
+                if ((((pos1 - pos2) ** 2) ** 0.5) < 100).all():
+                    return [pos1, pos2]
+    """
+            collision_list.append(combo)
+            collisions = True
+
+    self.collision(collision_list)
+    return collisions
+    """
 
 
 def collision(self, collision_list):
@@ -156,29 +183,6 @@ def collision(self, collision_list):
                     object[9],
                     object[10],
                 )
-
-
-def _check_collisions(self):  # nog aanpassen
-    """
-    Checks for collisions by iterating over all possible combinations,
-    checking if the objects in the combination share a similar orbit. If
-    this is the case their closeness will be checked. In the case of a
-    collision the involved bodies will be added to a list.
-
-    objects: list of all objects to be evaluated for colliding.
-    """
-    collision_list, collisions = [], False
-    for combo in combinations(self.objects, 2):
-        object1, object2 = combo
-        print(object1[10])
-        if (bool(set(object1.octree) & set(object2.octree))) == True and str(
-            np.isclose(object1[10], object2[10], rtol=1e-09, atol=2.0)
-        ) == "[True,  True,  True]":
-            collision_list.append(combo)
-            collisions = True
-
-    self.collision(collision_list)
-    return collisions
 
 
 def add_satellites(self, current_year, new_satellites=50):
