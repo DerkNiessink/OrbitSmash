@@ -11,7 +11,7 @@ from numba import jit
        'RCS_SIZE' (8), 'LAUNCH_DATE' (9), 'positions' (10), 'rotation_matrix' (11), 'groups' (12)]
 
 "objects_fast" =
-['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
+['EPOCH' (0), 'MEAN_ANOMALY' (1), 'SEMIMAJOR_AXIS' (2), 'pos_x' (3), pos_y' (4), 'pos_z' (5)]
 
 """
 
@@ -118,14 +118,14 @@ def calc_all_positions(
         time_removing = 2021
         if time % 31556926 == 0:
             if time_removing == begin_year:
-                self.remove_objects(time_removing)
-                self.add_satellites(time_removing)
+                remove_objects(time_removing)
+                add_satellites(time_removing)
             time_removing += 1
         """
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, margin=100.0):
+def check_collisions(objects: np.ndarray, margin=100.0*10**10):
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
@@ -145,6 +145,7 @@ def check_collisions(objects: np.ndarray, margin=100.0):
             pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
 
             if np.linalg.norm(pos1 - pos2) < margin:
+                print("collision")
                 return (objects[i], objects[j])
 
 
@@ -152,53 +153,43 @@ def zoom_collision(objects: np.ndarray, epoch, margin=1000):
     pass
 
 
-def collision(self, collision_list):
+def collision(objects: np.ndarray, collision_tuple):
     """ """
 
     # Create new debris
+    for object in collision_tuple:
 
-    if self._check_collosion == True:
+        # # object is nu debris
+        # object[7] = "DEBRIS"
 
-        for collision in collision_list:
+        # # aanpassen size
+        # if object[8] == "MEDIUM":
+        #     object[8] = "SMALL"
+        # elif object[8] == "LARGE":
+        #     object[8] == "MEDIUM"
 
-            for object in collision:
+        # # new id per new object
+        # max_norad_cat_id += 1
+        
+        # calculate new inclination
+        new_inclination = object[5] + random.sample([-3, -2, -1, 1, 2, 3], k=1)
+        if new_inclination > 180:
+            new_inclination -= 180
+        if new_inclination < 0:
+            new_inclination += 180
 
-                # object is nu debris
-                object[7] = "DEBRIS"
-
-                # aanpassen size
-                if object[8] == "MEDIUM":
-                    object[8] = "SMALL"
-                elif object[8] == "LARGE":
-                    object[8] == "MEDIUM"
-
-                # new id per new object
-                self.max_norad_cat_id += 1
-
-                # calculate new inclination
-                new_inclination = object[1] + random.sample([-3, -2, -1, 1, 2, 3])
-                if new_inclination > 180:
-                    new_inclination -= 180
-                if new_inclination < 0:
-                    new_inclination += 180
-
-                self.objects.append(
-                    object[0],
-                    new_inclination,
-                    object[2],
-                    object[3],
-                    object[4],
-                    self.max_norad_cat_id,
-                    object[6],
-                    object[7],
-                    object[8],
-                    object[9],
-                    object[10],
-                )
+        np.append(objects, (
+            object[0],
+            object[1],
+            -object[2],
+            -object[3],
+            -object[4],
+            new_inclination)
+        )
 
 
-def add_satellites(self, current_year, new_satellites=50):
-    self.max_norad_cat_id += 1
+def add_satellites(objects: np.ndarray, current_year, new_satellites=50):
+    max_norad_cat_id += 1
 
     new_mean_anomaly = object[4] + 180
     if new_mean_anomaly > 360:
@@ -211,21 +202,21 @@ def add_satellites(self, current_year, new_satellites=50):
     )
 
     for _ in range(0, number_of_new_satellites):
-        object = np.random.choice(self.objects)
+        object = np.random.choice(objects)
 
-        self.max_norad_cat_id += 1
+        max_norad_cat_id += 1
 
         new_mean_anomaly = object[4] + 180
         if new_mean_anomaly > 360:
             new_mean_anomaly -= 360
 
-        self.objects.append(
+        objects.append(
             object[0],
             object[1],
             object[2],
             object[3],
             new_mean_anomaly,
-            self.max_norad_cat_id,
+            max_norad_cat_id,
             object[6],
             object[7],
             object[8],
@@ -234,11 +225,11 @@ def add_satellites(self, current_year, new_satellites=50):
         )
 
 
-def remove_objects(self, time_removing, frequency=10, average_lifespan=20):
+def remove_objects(objects: np.ndarray, time_removing, frequency=10, average_lifespan=20):
 
     deleted_objects = 0
     # nu moet de fequentie uit objectenlijst worden gehaald.
-    for object in self.objects:
+    for object in objects:
         try:
             if (
                 object[8] == "LARGE"
@@ -246,7 +237,7 @@ def remove_objects(self, time_removing, frequency=10, average_lifespan=20):
                 and deleted_objects < frequency
             ):
                 # delete this object x times
-                self.objects.remove(object)
+                objects.remove(object)
                 deleted_objects += 1
         except:
             pass
