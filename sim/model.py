@@ -112,7 +112,7 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray):
+def check_collisions(objects: np.ndarray, margin=100.0):
     """
     Checks for collisions by iterating over all possible combinations,
     checking if the objects in the combination share a similar orbit. If
@@ -129,15 +129,8 @@ def check_collisions(objects: np.ndarray):
                 pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
                 pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
 
-                if ((((pos1 - pos2) ** 2) ** 0.5) < 100).all():
+                if ((((pos1 - pos2) ** 2) ** 0.5) < margin).all():
                     return [pos1, pos2]
-    """
-            collision_list.append(combo)
-            collisions = True
-
-    self.collision(collision_list)
-    return collisions
-    """
 
 
 def collision(self, collision_list):
