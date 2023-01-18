@@ -87,9 +87,11 @@ dataset["rotation_matrix"] = matrices
 linspace = np.linspace(min(dataset['SEMIMAJOR_AXIS']), max(dataset["SEMIMAJOR_AXIS"]), num= 100)
 bins = np.digitize(np.array(dataset['SEMIMAJOR_AXIS']),linspace,right=False)
 dataset['groups'] = bins
-groups = dataset.groupby('groups')['groups'].count() != 1
-print(groups)
 
+group = dataset.groupby('groups')['groups'].count() != 1
+delet =  list(group.loc[group == False].index)
+
+dataset=dataset[~dataset['groups'].isin(delet)]
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
