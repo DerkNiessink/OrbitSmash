@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 from model import *
 from graphics import View
-from data_cleaning import data_array
+from data_cleaning import data_array, data_array_group21
 
 
 def run_sim(
