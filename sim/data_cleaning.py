@@ -95,4 +95,6 @@ dataset=dataset[~dataset['groups'].isin(delet)]
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
+group_selection = data_array[:,12] == 6
+print(len(data_array[group_selection]))
 

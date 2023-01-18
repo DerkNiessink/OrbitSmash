@@ -6,9 +6,9 @@ from numba import jit
 """
 
 "objects" =
-['EPOCH', 'INCLINATION', 'RA_OF_ASC_NODE', 'ARG_OF_PERICENTER',
-       'MEAN_ANOMALY', 'NORAD_CAT_ID', 'SEMIMAJOR_AXIS', 'OBJECT_TYPE',
-       'RCS_SIZE', 'LAUNCH_DATE', 'positions', 'rotation_matrix']
+['EPOCH' (0), 'INCLINATION' (1), 'RA_OF_ASC_NODE' (2), 'ARG_OF_PERICENTER' (3),
+       'MEAN_ANOMALY' (4), 'NORAD_CAT_ID' (5), 'SEMIMAJOR_AXIS' (6), 'OBJECT_TYPE' (7),
+       'RCS_SIZE' (8), 'LAUNCH_DATE' (9), 'positions' (10), 'rotation_matrix' (11), 'groups' (12)]
 
 "objects_fast" =
 ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
@@ -125,16 +125,17 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, margin=100.0):
+def check_collisions(objects: np.ndarray, margin=100.0, group = 6):
     """
     Checks for collisions by iterating over all possible combinations,
     checking if the objects in the combination share a similar position.
 
     objects: list of all objects to be evaluated for colliding.
     """
+    group_selection = objects[:,12] == group
 
-    for i in range(len(objects)):
-        for j in range(len(objects)):
+    for i in range(len(objects[group_selection])):
+        for j in range(len(objects[group_selection])):
             if i != j:
 
                 pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
