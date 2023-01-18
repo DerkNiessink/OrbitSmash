@@ -3,23 +3,32 @@ import random
 from numba import jit
 
 
-""" ['EPOCH', 'INCLINATION', 'RA_OF_ASC_NODE', 'ARG_OF_PERICENTER',
+"""
+
+"objects" =
+['EPOCH', 'INCLINATION', 'RA_OF_ASC_NODE', 'ARG_OF_PERICENTER',
        'MEAN_ANOMALY', 'NORAD_CAT_ID', 'SEMIMAJOR_AXIS', 'OBJECT_TYPE',
-       'RCS_SIZE', 'LAUNCH_DATE', 'positions', 'rotation_matrix'] """
+       'RCS_SIZE', 'LAUNCH_DATE', 'positions', 'rotation_matrix']
+
+"objects_fast" =
+['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
+
+"""
 
 
-# standard gravitational parameter = G * M
 JD = 86400  # s
+# standard gravitational parameter = G * M
 mu = 6.6743 * 10**-11 * 5.972 * 10**24  # m**3 * s**-2
 max_norad_cat_id = 270288
 
 
 def initialize_positions(objects: np.ndarray, epoch: float):
     """
-    Initialize all objects in the given list to the same given epoch by
+    Initialize all objects in the given array to the same given epoch by
     adjusting object's true anomaly.
-    objects: list of objects to be calibrated.
-    epoch: desired Julian date in seconds.
+
+    objects: array of objects to be calibrated.
+    epoch: desired Julian date in seconds (Monday 1 November 2021 13:00:01).
     """
     for object in objects:
         initialized_anomaly = calc_new_anomaly(epoch, object[0], object[4], object[6])
@@ -57,6 +66,10 @@ def new_position(
 
     time: time in seconds after object's epoch at which the position will
     computed.
+    epoch: time corresponding to the mean anomaly of the object.
+    mean_anomaly: anomaly in rad corresponding to the time.
+    semimajor_axis: semimajor axis of the orbit.
+    rotation_matrix: rotation matrix computed from the 3 orbital angles.
 
     Returns the 3D position vector (in the Earth frame) of the object at
     the given time.
@@ -65,10 +78,7 @@ def new_position(
     true_anomaly = mean_anomaly + time_delta * np.sqrt(mu / semimajor_axis**3)
 
     pos_orbit_frame = (
-        np.array(
-            [np.cos(np.deg2rad(true_anomaly)), np.sin(np.deg2rad(true_anomaly)), 0]
-        )
-        * semimajor_axis
+        np.array([np.cos(true_anomaly), np.sin(true_anomaly), 0]) * semimajor_axis
     )
 
     return rotation_matrix.dot(pos_orbit_frame)
@@ -79,14 +89,13 @@ def calc_all_positions(
     objects: np.ndarray, matrices: np.ndarray, time: float
 ) -> np.ndarray:
     """
-    Calculate the new positions of all objects by first initializing all
-    positions and save the positions in a csv as "output.csv".
+    Calculate the new positions of all objects.
 
-    objects: list of objects to be evaluated.
-    endtime: how long you want the trial to be.
-    timestep: the size of the steps in time.
-
-    epoch: Monday 1 November 2021 13:00:01
+    objects: array of objects to be evaluated, which has to be in following form
+     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
+    marices: array of rotation matrices of the objects computed from the 3
+    orbital angles.
+    time: time at which the positions will be calculated.
     """
     for i in range(len(objects)):
 
@@ -97,7 +106,11 @@ def calc_all_positions(
             semimajor_axis=objects[i][2],
             rotation_matrix=matrices[i],
         )
-        objects[i][3], objects[i][4], objects[i][5] = pos[0], pos[1], pos[2]
+        objects[i][3], objects[i][4], objects[i][5] = (
+            pos[0],
+            pos[1],
+            pos[2],
+        )
 
         """
         HIER KOMT REMOVE SATELLITE + NEW SATELLITE
@@ -115,9 +128,7 @@ def calc_all_positions(
 def check_collisions(objects: np.ndarray, margin=100.0):
     """
     Checks for collisions by iterating over all possible combinations,
-    checking if the objects in the combination share a similar orbit. If
-    this is the case their closeness will be checked. In the case of a
-    collision the involved bodies will be added to a list.
+    checking if the objects in the combination share a similar position.
 
     objects: list of all objects to be evaluated for colliding.
     """
