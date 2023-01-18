@@ -23,6 +23,7 @@ def fast_arr(objects: np.ndarray):
                 0,
                 0,
                 0,
+                object[1]
             ]
             for object in objects
         ]
@@ -54,6 +55,7 @@ def run_sim(
     for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
         calc_all_positions(objects_fast, matrices, time)
         check_collisions(objects_fast, debris_fast)
+
 
         if draw:
             view.draw(objects_fast)
