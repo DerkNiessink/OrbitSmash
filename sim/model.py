@@ -1,6 +1,7 @@
 import numpy as np
 import random
 from numba import jit, njit
+import math 
 
 """
 
@@ -33,6 +34,18 @@ def initialize_positions(objects: np.ndarray, epoch: float):
         initialized_anomaly = calc_new_anomaly(epoch, object[0], object[4], object[6])
         object[4] = initialized_anomaly
         object[0] = epoch
+
+def random_debris(objects: np.ndarray, debris: np.ndarray, percentage):
+
+    new_debris = math.ceil(len(objects) * (percentage/100))
+
+    for i in range(new_debris):
+        random_debris_ = np.random.shuffle(debris)
+        np.concatenate((objects, random_debris_[:1, :]), axis=0)
+        
+    return
+
+
 
 
 @jit(nopython=True)

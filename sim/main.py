@@ -35,7 +35,8 @@ def run_sim(
     if draw:
         view = View(objects)
 
-    initialize_positions(objects, epoch)
+    initialize_positions(objects,epoch)
+    #random_debris(objects,  debris,  50)
 
     objects_fast = fast_arr(objects)
     debris_fast = fast_arr(debris)
