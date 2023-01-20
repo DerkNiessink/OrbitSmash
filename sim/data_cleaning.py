@@ -92,15 +92,15 @@ bins = np.digitize(np.array(dataset["SEMIMAJOR_AXIS"]), linspace, right=False)
 dataset["groups"] = bins
 
 group = dataset.groupby("groups")["groups"].count() != 1
+
+
 delete = list(group.loc[group == False].index)
 
+# the groups that have no debris
+delete.extend([6, 7, 9, 10])
+
 dataset = dataset[~dataset["groups"].isin(delete)]
-
 group_amount = dataset.groupby("groups")["groups"].count()
-
-# for i, v in group_amount.items():
-#     print('index: ', i, 'value: ', v)
-    
 
 data_debris = dataset.loc[dataset["OBJECT_TYPE"] == "DEBRIS"]
 
@@ -108,11 +108,14 @@ data_debris = dataset.loc[dataset["OBJECT_TYPE"] == "DEBRIS"]
 data_array = dataset.to_numpy()
 data_array_debris = data_debris.to_numpy()
 
-
 group_selection = data_array[:, 12] == 7
 group_selection_debris = data_array_debris[:, 12] == 7
 
+data_array_group = data_array[group_selection]
+data_array_debris_group = data_array_debris[group_selection_debris]
 
-data_array_group21 = data_array[group_selection]
-data_array_debris_group21 = data_array_debris[group_selection_debris]
+
+
+
+
 

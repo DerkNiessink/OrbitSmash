@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 from model import *
 from graphics import View
-from data_cleaning import data_array, data_array_group21, data_array_debris_group21
+from data_cleaning import  data_array_group, data_array_debris_group # data_array,
 
 
 def fast_arr(objects: np.ndarray):
@@ -36,7 +36,6 @@ def run_sim(
         view = View(objects)
 
     initialize_positions(objects,epoch)
-    #random_debris(objects,  debris,  50)
 
     objects_fast = fast_arr(objects)
     debris_fast = fast_arr(debris)
@@ -46,13 +45,28 @@ def run_sim(
         calc_all_positions(objects_fast, matrices, time)
         check_collisions(objects_fast, debris_fast)
 
+
+        """Functies die na een bepaalde delta t worden aangeroepen"""
+
+        """ Een dag """
+        if time % 86400 == 0:
+            # roep hier dan een functie aan 
+            # random_debris(...)
+            pass
+
+        """ Een jaar """
+        if time % 31556926 == 0:
+            # roep hier dan een functie aan 
+            #random_debris(...)
+            pass
+
         if draw:
             view.draw(objects_fast)
 
 
 if __name__ == "__main__":
-    objects = data_array_group21
-    debris = data_array_debris_group21
+    objects = data_array_group
+    debris = data_array_debris_group
 
     view = False
 

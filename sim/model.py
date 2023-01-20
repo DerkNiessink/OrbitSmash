@@ -15,6 +15,9 @@ import math
 
 """
 
+""" PARAMETERS 
+    Hier kunnen we een lijstje parameters maken die we willen opslaan tijdens het runnen. """
+
 
 JD = 86400  # s
 # standard gravitational parameter = G * M
@@ -35,14 +38,21 @@ def initialize_positions(objects: np.ndarray, epoch: float):
         object[4] = initialized_anomaly
         object[0] = epoch
 
-def random_debris(objects: np.ndarray, debris: np.ndarray, percentage):
+def random_debris(objects: np.ndarray, debris: np.ndarray, probability, percentage):
+    """ This function is called after a certain time. 
+        When this function is called, a certain amount of debris is added to the dataset.
+        The amount of added derbis is determined by a parameter: percentage.  
+        The parameter: probability, is the probability that new debris is added 
+     """
 
-    new_debris = math.ceil(len(objects) * (percentage/100))
+    if np.random.rand() < probability: 
 
-    for i in range(new_debris):
-        random_debris_ = np.random.shuffle(debris)
-        np.concatenate((objects, random_debris_[:1, :]), axis=0)
-        
+        new_debris = np.ceil(len(objects) * (percentage/100))
+
+        for _ in range(new_debris):
+            random_debris_ = np.random.shuffle(debris)
+            np.append((objects, random_debris_[:1, :]), axis=0)
+            print('New debris is added')
     return
 
 
@@ -209,8 +219,8 @@ def add_satellites(objects: np.ndarray, current_year, new_satellites=50):
         if new_mean_anomaly > 360:
             new_mean_anomaly -= 360
 
-        objects.append(
-            object[0],
+        np.append( objects,
+            (object[0],
             object[1],
             object[2],
             object[3],
@@ -220,7 +230,7 @@ def add_satellites(objects: np.ndarray, current_year, new_satellites=50):
             object[7],
             object[8],
             launch_date,
-            object[10],
+            object[10])
         )
 
 
@@ -238,7 +248,7 @@ def remove_objects(
                 and deleted_objects < frequency
             ):
                 # delete this object x times
-                objects.remove(object)
+                np.delete(objects, (deleted_objects), axis=0)
                 deleted_objects += 1
         except:
             pass
