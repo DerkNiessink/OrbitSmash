@@ -16,7 +16,12 @@ import math
 """
 
 """ PARAMETERS 
-    Hier kunnen we een lijstje parameters maken die we willen opslaan tijdens het runnen. """
+    Hier kunnen we een lijstje parameters maken die we willen opslaan tijdens het runnen.
+    Bijv:
+    number_of_collisions = 
+    time_untill_first_collision = 
+    etc. 
+     """
 
 
 JD = 86400  # s
@@ -46,17 +51,13 @@ def random_debris(objects: np.ndarray, debris: np.ndarray, probability, percenta
      """
 
     if np.random.rand() < probability: 
-
         new_debris = np.ceil(len(objects) * (percentage/100))
+        print(new_debris)
 
-        for _ in range(new_debris):
-            random_debris_ = np.random.shuffle(debris)
-            np.append((objects, random_debris_[:1, :]), axis=0)
-            print('New debris is added')
+        for _ in range(int(new_debris)):
+            np.random.shuffle(debris)
+            objects = np.append(objects, debris[:1, :], axis=0)
     return
-
-
-
 
 @jit(nopython=True)
 def calc_new_anomaly(

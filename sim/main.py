@@ -35,7 +35,8 @@ def run_sim(
     if draw:
         view = View(objects)
 
-    initialize_positions(objects,epoch)
+    initialize_positions(objects, epoch)
+    #random_debris(objects, debris, 1, 50)
 
     objects_fast = fast_arr(objects)
     debris_fast = fast_arr(debris)
@@ -47,7 +48,6 @@ def run_sim(
 
 
         """Functies die na een bepaalde delta t worden aangeroepen"""
-
         """ Een dag """
         if time % 86400 == 0:
             # roep hier dan een functie aan 
