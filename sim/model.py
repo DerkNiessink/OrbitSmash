@@ -1,7 +1,7 @@
 import numpy as np
 import random
 from numba import jit, njit
-import math 
+import math
 
 """
 
@@ -43,21 +43,24 @@ def initialize_positions(objects: np.ndarray, epoch: float):
         object[4] = initialized_anomaly
         object[0] = epoch
 
-def random_debris(objects: np.ndarray, debris: np.ndarray, probability, percentage):
-    """ This function is called after a certain time. 
-        When this function is called, a certain amount of debris is added to the dataset.
-        The amount of added derbis is determined by a parameter: percentage.  
-        The parameter: probability, is the probability that new debris is added 
-     """
 
-    if np.random.rand() < probability: 
-        new_debris = np.ceil(len(objects) * (percentage/100))
+@jit(nopython=True)
+def random_debris(objects: np.ndarray, debris: np.ndarray, probability, percentage):
+    """This function is called after a certain time.
+    When this function is called, a certain amount of debris is added to the dataset.
+    The amount of added derbis is determined by a parameter: percentage.
+    The parameter: probability, is the probability that new debris is added
+    """
+
+    if np.random.rand() < probability:
+        new_debris = np.ceil(len(objects) * (percentage / 100))
         print(new_debris)
 
         for _ in range(int(new_debris)):
             np.random.shuffle(debris)
             objects = np.append(objects, debris[:1, :], axis=0)
     return
+
 
 @jit(nopython=True)
 def calc_new_anomaly(
@@ -168,7 +171,7 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
                 pos2 = np.array([debris[j][3], debris[j][4], debris[j][5]])
 
                 if np.linalg.norm(pos1 - pos2) < margin:
-                    collision(objects, objects[i], debris[j])
+                    return collision(objects, objects[i], debris[j])
 
 
 def zoom_collision(objects: np.ndarray, epoch, margin=1000):
@@ -192,7 +195,7 @@ def collision(
         if new_inclination < 0:
             new_inclination += 180
 
-        np.append(
+        return np.append(
             objects,
             (object[0], object[1], -object[2], -object[3], -object[4], new_inclination),
         )
@@ -220,18 +223,21 @@ def add_satellites(objects: np.ndarray, current_year, new_satellites=50):
         if new_mean_anomaly > 360:
             new_mean_anomaly -= 360
 
-        np.append( objects,
-            (object[0],
-            object[1],
-            object[2],
-            object[3],
-            new_mean_anomaly,
-            max_norad_cat_id,
-            object[6],
-            object[7],
-            object[8],
-            launch_date,
-            object[10])
+        np.append(
+            objects,
+            (
+                object[0],
+                object[1],
+                object[2],
+                object[3],
+                new_mean_anomaly,
+                max_norad_cat_id,
+                object[6],
+                object[7],
+                object[8],
+                launch_date,
+                object[10],
+            ),
         )
 
 
