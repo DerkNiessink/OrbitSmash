@@ -43,11 +43,9 @@ def run_sim(
 
         calc_all_positions(objects_fast, matrices, time)
 
-        """
         new_objects = check_collisions(objects_fast, debris_fast)
         if new_objects != None:
             objects_fast = new_objects
-        """
 
         """Functies die na een bepaalde delta t worden aangeroepen"""
         if time % 200 == 0:

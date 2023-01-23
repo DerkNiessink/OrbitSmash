@@ -53,10 +53,18 @@ def random_debris(
     percentage: float,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
-    """This function is called after a certain time.
-    When this function is called, a certain amount of debris is added to the dataset.
-    The amount of added derbis is determined by a parameter: percentage.
-    The parameter: probability, is the probability that new debris is added
+    """
+    Add a certain amount, given by the percentage of the existing debris, of
+    debris with random orbits and positions. The new debris is added to the
+    objects and debris arrays and its random rotation matrix to matrices.
+
+    objects: np.array of all objects (including debris).
+    debris: np.array of all debris.
+    matrices: np.array of all rotation matrices of the objects.
+    time: current simulation times.
+    percentage: desired percentage of the number of existing objects to add.
+
+    Returns a tuple of the new objects, debris and matrices arrays.
     """
 
     n_new_debris = np.ceil(len(objects) * (percentage / 100))
@@ -196,10 +204,6 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
 
                 if np.linalg.norm(pos1 - pos2) < margin:
                     return collision(objects, objects[i], debris[j])
-
-
-def zoom_collision(objects: np.ndarray, epoch, margin=1000):
-    pass
 
 
 @jit(nopython=True)
