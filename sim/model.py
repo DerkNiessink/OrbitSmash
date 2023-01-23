@@ -21,7 +21,7 @@ import math
     number_of_collisions = 
     time_untill_first_collision = 
     etc. 
-     """
+    """
 
 
 JD = 86400  # s
@@ -43,20 +43,19 @@ def initialize_positions(objects: np.ndarray, epoch: float):
         object[4] = initialized_anomaly
         object[0] = epoch
 
-def random_debris(objects: np.ndarray, debris: np.ndarray, probability, percentage):
+def random_debris(objects, debris, probability, percentage):
     """ This function is called after a certain time. 
         When this function is called, a certain amount of debris is added to the dataset.
         The amount of added derbis is determined by a parameter: percentage.  
         The parameter: probability, is the probability that new debris is added 
      """
-
+     
     if np.random.rand() < probability: 
         new_debris = np.ceil(len(objects) * (percentage/100))
-        print(new_debris)
-
+        
         for _ in range(int(new_debris)):
-            np.random.shuffle(debris)
-            objects = np.append(objects, debris[:1, :], axis=0)
+            x = np.random.randint(len(debris), size =1)
+            objects = np.append(objects, debris[x], axis=0)
     return
 
 @jit(nopython=True)

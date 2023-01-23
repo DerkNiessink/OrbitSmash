@@ -36,7 +36,7 @@ def run_sim(
         view = View(objects)
 
     initialize_positions(objects, epoch)
-    #random_debris(objects, debris, 1, 50)
+    random_debris(objects, debris, 1, 50)
 
     objects_fast = fast_arr(objects)
     debris_fast = fast_arr(debris)
