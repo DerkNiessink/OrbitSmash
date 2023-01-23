@@ -1,7 +1,8 @@
 import numpy as np
-import random
 from numba import jit, njit
-import math
+
+from scipy.spatial.transform import Rotation
+
 
 """
 
@@ -44,8 +45,14 @@ def initialize_positions(objects: np.ndarray, epoch: float):
         object[0] = epoch
 
 
-@jit(nopython=True)
-def random_debris(objects: np.ndarray, debris: np.ndarray, probability, percentage):
+def random_debris(
+    objects: np.ndarray,
+    debris: np.ndarray,
+    matrices: np.ndarray,
+    time: float,
+    probability: float,
+    percentage: float,
+):
     """This function is called after a certain time.
     When this function is called, a certain amount of debris is added to the dataset.
     The amount of added derbis is determined by a parameter: percentage.
@@ -54,12 +61,31 @@ def random_debris(objects: np.ndarray, debris: np.ndarray, probability, percenta
 
     if np.random.rand() < probability:
         new_debris = np.ceil(len(objects) * (percentage / 100))
-        print(new_debris)
 
-        for _ in range(int(new_debris)):
-            x = np.random.randint(len(debris), size=1)
-            objects = np.append(objects, debris[x], axis=0)
-    return
+        for _ in range(new_debris):
+            R = Rotation.from_euler(
+                "zxz",
+                [
+                    -np.random.uniform(0, 360),
+                    -np.random.normal(90, 15),
+                    -np.random.uniform(0, 360),
+                ],
+                degrees=True,
+            )
+            matrices = np.append(matrices, R.as_matrix())
+            mean_anomaly = np.random.uniform(0, 360)
+            pos = new_position(time, time, mean_anomaly, semimajor_axis, R.as_matrix())
+
+            objects = np.append(
+                objects,
+                np.array(
+                    [
+                        time,
+                    ]
+                ),
+                axis=0,
+            )
+            debris = np.append(debris, debris[x], axis=0)
 
 
 @jit(nopython=True)
@@ -137,17 +163,6 @@ def calc_all_positions(
             pos[1],
             pos[2],
         )
-
-        """
-        HIER KOMT REMOVE SATELLITE + NEW SATELLITE
-        # wordt elk jaar aangeroepen
-        time_removing = 2021
-        if time % 31556926 == 0:
-            if time_removing == begin_year:
-                remove_objects(time_removing)
-                add_satellites(time_removing)
-            time_removing += 1
-        """
 
 
 @jit(nopython=True)

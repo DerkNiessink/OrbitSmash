@@ -36,7 +36,6 @@ def run_sim(
         view = View(objects)
 
     initialize_positions(objects, epoch)
-    random_debris(objects, debris, 1, 50)
 
     objects_fast = fast_arr(objects)
     debris_fast = fast_arr(debris)
@@ -54,7 +53,9 @@ def run_sim(
         if time % 86400 == 0:
             # roep hier dan een functie aan
             # random_debris(...)
-            random_debris()
+            pass
+
+        random_debris(objects_fast, debris_fast, 1, 50)
 
         """ Een jaar """
         if time % 31556926 == 0:
