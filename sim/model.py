@@ -50,42 +50,52 @@ def random_debris(
     debris: np.ndarray,
     matrices: np.ndarray,
     time: float,
-    probability: float,
     percentage: float,
-):
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+
     """This function is called after a certain time.
     When this function is called, a certain amount of debris is added to the dataset.
     The amount of added derbis is determined by a parameter: percentage.
     The parameter: probability, is the probability that new debris is added
     """
 
-    if np.random.rand() < probability:
-        new_debris = np.ceil(len(objects) * (percentage / 100))
+    n_new_debris = np.ceil(len(objects) * (percentage / 100))
 
-        for _ in range(new_debris):
-            R = Rotation.from_euler(
-                "zxz",
-                [
-                    -np.random.uniform(0, 360),
-                    -np.random.normal(90, 15),
-                    -np.random.uniform(0, 360),
-                ],
-                degrees=True,
-            )
-            matrices = np.append(matrices, R.as_matrix())
-            mean_anomaly = np.random.uniform(0, 360)
-            pos = new_position(time, time, mean_anomaly, semimajor_axis, R.as_matrix())
+    for _ in range(int(n_new_debris)):
 
-            objects = np.append(
-                objects,
-                np.array(
-                    [
-                        time,
-                    ]
-                ),
-                axis=0,
-            )
-            debris = np.append(debris, debris[x], axis=0)
+        mean_anomaly, semimajor_axis, matrix = random_params(objects)
+        matrices = np.append(matrices, matrix, axis=0)
+        pos = new_position(time, time + 1, mean_anomaly, semimajor_axis, matrices[-1])
+        new_debris = np.array(
+            [[time, mean_anomaly, semimajor_axis, pos[0], pos[1], pos[2]]]
+        )
+
+        objects = np.append(
+            objects,
+            new_debris,
+            axis=0,
+        )
+        debris = np.append(debris, new_debris, axis=0)
+
+    return objects, debris, matrices
+
+
+def random_params(objects) -> tuple:
+    """Returns random object parameters"""
+
+    R = Rotation.from_euler(
+        "zxz",
+        [
+            -np.random.uniform(0, 360),
+            -np.random.normal(0, 360),
+            -np.random.uniform(0, 360),
+        ],
+        degrees=True,
+    )
+    mean_anomaly = np.random.uniform(0, 360)
+    semimajor_axis = objects[np.random.randint(len(objects))][2]
+
+    return mean_anomaly, semimajor_axis, np.array([R.as_matrix()])
 
 
 @jit(nopython=True)
@@ -128,7 +138,6 @@ def new_position(
     """
     time_delta = time - epoch  # s
     true_anomaly = mean_anomaly + time_delta * np.sqrt(mu / semimajor_axis**3)
-
     pos_orbit_frame = (
         np.array([np.cos(true_anomaly), np.sin(true_anomaly), 0]) * semimajor_axis
     )

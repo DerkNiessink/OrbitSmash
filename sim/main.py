@@ -14,9 +14,7 @@ def fast_arr(objects: np.ndarray):
     Returns array of the form:
       -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
     """
-    return np.array(
-        [[object[0], object[4], object[6], 0, 0, 0, object[1]] for object in objects]
-    )
+    return np.array([[object[0], object[4], object[6], 0, 0, 0] for object in objects])
 
 
 def run_sim(
@@ -42,20 +40,21 @@ def run_sim(
     matrices = np.array([object[11] for object in objects])
 
     for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
+
         calc_all_positions(objects_fast, matrices, time)
 
+        """
         new_objects = check_collisions(objects_fast, debris_fast)
         if new_objects != None:
             objects_fast = new_objects
+        """
 
         """Functies die na een bepaalde delta t worden aangeroepen"""
-        """ Een dag """
-        if time % 86400 == 0:
-            # roep hier dan een functie aan
-            # random_debris(...)
-            pass
-
-        random_debris(objects_fast, debris_fast, 1, 50)
+        if time % 200 == 0:
+            objects_fast, debris_fast, matrices = random_debris(
+                objects_fast, debris_fast, matrices, time, 20
+            )
+            view.make_new_drawables(objects_fast)
 
         """ Een jaar """
         if time % 31556926 == 0:
@@ -64,7 +63,7 @@ def run_sim(
             pass
 
         if draw:
-            view.draw(objects_fast)
+            view.draw(objects_fast, time - epoch)
 
 
 if __name__ == "__main__":
@@ -76,4 +75,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "view":
         view = True
 
-    run_sim(objects, debris, endtime=31556926, timestep=100, draw=view)
+    run_sim(objects, debris, endtime=31556926, timestep=1, draw=view)
