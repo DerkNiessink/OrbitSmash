@@ -1,7 +1,8 @@
 import numpy as np
-import random
 from numba import jit, njit
-import math 
+
+from scipy.spatial.transform import Rotation
+
 
 """
 
@@ -59,10 +60,9 @@ def random_debris(objects, debris, probability, percentage):
         new_debris = np.ceil(len(objects) * (percentage/100))
         
         for _ in range(int(new_debris)):
-            x = np.random.randint(debris, size =1)
+            x = np.random.randint(len(debris), size =1)
             objects = np.append(objects, debris[x], axis=0)
-        
-        return int(new_debris)
+    return
 
 @jit(nopython=True)
 def calc_new_anomaly(
@@ -104,7 +104,6 @@ def new_position(
     """
     time_delta = time - epoch  # s
     true_anomaly = mean_anomaly + time_delta * np.sqrt(mu / semimajor_axis**3)
-
     pos_orbit_frame = (
         np.array([np.cos(true_anomaly), np.sin(true_anomaly), 0]) * semimajor_axis
     )
@@ -140,17 +139,6 @@ def calc_all_positions(
             pos[2],
         )
 
-        """
-        HIER KOMT REMOVE SATELLITE + NEW SATELLITE
-        # wordt elk jaar aangeroepen
-        time_removing = 2021
-        if time % 31556926 == 0:
-            if time_removing == begin_year:
-                remove_objects(time_removing)
-                add_satellites(time_removing)
-            time_removing += 1
-        """
-
 
 @jit(nopython=True)
 def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
@@ -174,8 +162,7 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
 
                 if np.linalg.norm(pos1 - pos2) < margin:
                     collision(objects, objects[i], debris[j])
-                    return objects[i], debris[j]
-    return None
+
 
 def zoom_collision(objects: np.ndarray, epoch, margin=1000):
     pass
@@ -198,7 +185,7 @@ def collision(
         if new_inclination < 0:
             new_inclination += 180
 
-        np.append(
+        return np.append(
             objects,
             (object[0], object[1], -object[2], -object[3], -object[4], new_inclination),
         )
@@ -226,18 +213,21 @@ def add_satellites(objects: np.ndarray, current_year, new_satellites=50):
         if new_mean_anomaly > 360:
             new_mean_anomaly -= 360
 
-        np.append( objects,
-            (object[0],
-            object[1],
-            object[2],
-            object[3],
-            new_mean_anomaly,
-            max_norad_cat_id,
-            object[6],
-            object[7],
-            object[8],
-            launch_date,
-            object[10])
+        np.append(
+            objects,
+            (
+                object[0],
+                object[1],
+                object[2],
+                object[3],
+                new_mean_anomaly,
+                max_norad_cat_id,
+                object[6],
+                object[7],
+                object[8],
+                launch_date,
+                object[10],
+            ),
         )
 
 
