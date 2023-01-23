@@ -62,7 +62,7 @@ def random_debris(objects, debris, probability, percentage):
         for _ in range(int(new_debris)):
             x = np.random.randint(len(debris), size =1)
             objects = np.append(objects, debris[x], axis=0)
-    return
+        return int(new_debris)
 
 @jit(nopython=True)
 def calc_new_anomaly(
