@@ -18,11 +18,16 @@ import math
 """ PARAMETERS 
     Hier kunnen we een lijstje parameters maken die we willen opslaan tijdens het runnen.
     Bijv:
-    number_of_collisions = 
-    time_untill_first_collision = 
+
+    collisions = {'objects': [object1, object2], 'timestep': float}
+    new_debris = {'timestep': float, 'number of new debris': 'int'}
+    parameters = ['group', 'epoch', 'endtime', 'timestep', 'probabilty', 'precentage']
     etc. 
     """
-
+collisions = {'objects': [], 'timestamp': float()}
+new_debris = {'timestep': float(), 'number_new_debris': int()}
+parameters = {'group': int(), 'epoch': int(), 'endtime': int(), 'timestep':int(), 
+                'probabilty': float(), 'precentage': int()}
 
 JD = 86400  # s
 # standard gravitational parameter = G * M
@@ -54,9 +59,10 @@ def random_debris(objects, debris, probability, percentage):
         new_debris = np.ceil(len(objects) * (percentage/100))
         
         for _ in range(int(new_debris)):
-            x = np.random.randint(len(debris), size =1)
+            x = np.random.randint(debris, size =1)
             objects = np.append(objects, debris[x], axis=0)
-    return
+        
+        return int(new_debris)
 
 @jit(nopython=True)
 def calc_new_anomaly(
@@ -168,7 +174,8 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
 
                 if np.linalg.norm(pos1 - pos2) < margin:
                     collision(objects, objects[i], debris[j])
-
+                    return objects[i], debris[j]
+    return None
 
 def zoom_collision(objects: np.ndarray, epoch, margin=1000):
     pass
