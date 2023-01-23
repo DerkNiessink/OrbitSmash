@@ -21,7 +21,7 @@ import math
     number_of_collisions = 
     time_untill_first_collision = 
     etc. 
-     """
+    """
 
 
 JD = 86400  # s
@@ -57,8 +57,8 @@ def random_debris(objects: np.ndarray, debris: np.ndarray, probability, percenta
         print(new_debris)
 
         for _ in range(int(new_debris)):
-            np.random.shuffle(debris)
-            objects = np.append(objects, debris[:1, :], axis=0)
+            x = np.random.randint(len(debris), size=1)
+            objects = np.append(objects, debris[x], axis=0)
     return
 
 
