@@ -25,10 +25,7 @@ from scipy.spatial.transform import Rotation
     parameters = ['group', 'epoch', 'endtime', 'timestep', 'probabilty', 'precentage']
     etc. 
     """
-collisions = {'objects': [], 'timestamp': float()}
-new_debris = {'timestep': float(), 'number_new_debris': int()}
-parameters = {'group': int(), 'epoch': int(), 'endtime': int(), 'timestep':int(), 
-                'probabilty': float(), 'precentage': int()}
+
 
 JD = 86400  # s
 # standard gravitational parameter = G * M
