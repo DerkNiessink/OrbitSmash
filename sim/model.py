@@ -165,7 +165,8 @@ def calc_all_positions(
     """
     Calculate the new positions of all objects.
 
-    objects: array of objects to be evaluated, which has to be in following form
+    objects: array of objects to be evaluated. An objects has to be in the
+    following form:
      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
     marices: array of rotation matrices of the objects computed from the 3
     orbital angles.
@@ -193,7 +194,8 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
 
-    objects: array of objects to be evaluated, which has to be in following form
+    objects: array of objects to be evaluated. An object has to be in the
+    following form:
      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
     margin: say that there could be a collision when difference of the x, y
     and z coordinates is smaller than this margin.
@@ -215,7 +217,17 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
 def collision(
     objects: np.ndarray, object_involved1: np.ndarray, object_involved2: np.ndarray
 ):
-    """ """
+    """
+    Add two new objects at the positions of the two objects involved in a
+    collision with a slightly adjusted inclination.
+
+    objects: np.array of objects to be evaluated. An object has to be in the
+    following form:
+     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
+    object_involved: np.array of one object in the same form as above.
+
+    Returns a copy of the objects with the 2 new objects appended.
+    """
 
     # Create new debris
     for object in [object_involved1, object_involved2]:
