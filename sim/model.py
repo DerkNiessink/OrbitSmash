@@ -68,11 +68,13 @@ def random_debris(
     Add a certain amount, given by the percentage of the existing debris, of
     debris with random orbits and positions. The new debris is added to the
     objects and debris arrays and its random rotation matrix to matrices.
+
     objects: np.array of all objects (including debris).
     debris: np.array of all debris.
     matrices: np.array of all rotation matrices of the objects.
     time: current simulation times.
     percentage: desired percentage of the number of existing objects to add.
+
     Returns a tuple of the new objects, debris and matrices arrays.
     """
 
