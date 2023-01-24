@@ -25,10 +25,16 @@ from scipy.spatial.transform import Rotation
     parameters = ['group', 'epoch', 'endtime', 'timestep', 'probabilty', 'precentage']
     etc. 
     """
-collisions = {'objects': [], 'timestamp': float()}
-new_debris = {'timestep': float(), 'number_new_debris': int()}
-parameters = {'group': int(), 'epoch': int(), 'endtime': int(), 'timestep':int(), 
-                'probabilty': float(), 'precentage': int()}
+collisions = {"objects": [], "timestamp": float()}
+new_debris = {"timestep": float(), "number_new_debris": int()}
+parameters = {
+    "group": int(),
+    "epoch": int(),
+    "endtime": int(),
+    "timestep": int(),
+    "probabilty": float(),
+    "precentage": int(),
+}
 
 JD = 86400  # s
 # standard gravitational parameter = G * M
@@ -49,20 +55,59 @@ def initialize_positions(objects: np.ndarray, epoch: float):
         object[4] = initialized_anomaly
         object[0] = epoch
 
-def random_debris(objects, debris, probability, percentage):
-    """ This function is called after a certain time. 
-        When this function is called, a certain amount of debris is added to the dataset.
-        The amount of added derbis is determined by a parameter: percentage.  
-        The parameter: probability, is the probability that new debris is added 
-     """
-     
-    if np.random.rand() < probability: 
-        new_debris = np.ceil(len(objects) * (percentage/100))
-        
-        for _ in range(int(new_debris)):
-            x = np.random.randint(len(debris), size =1)
-            objects = np.append(objects, debris[x], axis=0)
-        return int(new_debris)
+
+def random_debris(
+    objects: np.ndarray,
+    debris: np.ndarray,
+    matrices: np.ndarray,
+    time: float,
+    percentage: float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+
+    """
+    Add a certain amount, given by the percentage of the existing debris, of
+    debris with random orbits and positions. The new debris is added to the
+    objects and debris arrays and its random rotation matrix to matrices.
+    objects: np.array of all objects (including debris).
+    debris: np.array of all debris.
+    matrices: np.array of all rotation matrices of the objects.
+    time: current simulation times.
+    percentage: desired percentage of the number of existing objects to add.
+    Returns a tuple of the new objects, debris and matrices arrays.
+    """
+
+    n_new_debris = np.ceil(len(objects) * (percentage / 100))
+    for _ in range(int(n_new_debris)):
+        mean_anomaly, semimajor_axis, matrix = random_params(objects)
+        matrices = np.append(matrices, matrix, axis=0)
+        pos = new_position(time, time + 1, mean_anomaly, semimajor_axis, matrices[-1])
+        new_debris = np.array(
+            [[time, mean_anomaly, semimajor_axis, pos[0], pos[1], pos[2]]]
+        )
+        objects = np.append(
+            objects,
+            new_debris,
+            axis=0,
+        )
+        debris = np.append(debris, new_debris, axis=0)
+    return objects, debris, matrices
+
+
+def random_params(objects) -> tuple:
+    """Returns random object parameters"""
+    R = Rotation.from_euler(
+        "zxz",
+        [
+            -np.random.uniform(0, 360),
+            -np.random.normal(0, 360),
+            -np.random.uniform(0, 360),
+        ],
+        degrees=True,
+    )
+    mean_anomaly = np.random.uniform(0, 360)
+    semimajor_axis = objects[np.random.randint(len(objects))][2]
+    return mean_anomaly, semimajor_axis, np.array([R.as_matrix()])
+
 
 @jit(nopython=True)
 def calc_new_anomaly(
