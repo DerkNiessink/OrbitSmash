@@ -211,10 +211,6 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
                     collision(objects, objects[i], debris[j])
 
 
-def zoom_collision(objects: np.ndarray, epoch, margin=1000):
-    pass
-
-
 @jit(nopython=True)
 def collision(
     objects: np.ndarray, object_involved1: np.ndarray, object_involved2: np.ndarray
@@ -236,63 +232,3 @@ def collision(
             objects,
             (object[0], object[1], -object[2], -object[3], -object[4], new_inclination),
         )
-
-
-def add_satellites(objects: np.ndarray, current_year, new_satellites=50):
-    max_norad_cat_id += 1
-
-    new_mean_anomaly = object[4] + 180
-    if new_mean_anomaly > 360:
-        new_mean_anomaly -= 360
-
-    launch_date = current_year
-
-    number_of_new_satellites = np.random.normal(
-        loc=new_satellites, scale=new_satellites * 0.2
-    )
-
-    for _ in range(0, number_of_new_satellites):
-        object = np.random.choice(objects)
-
-        max_norad_cat_id += 1
-
-        new_mean_anomaly = object[4] + 180
-        if new_mean_anomaly > 360:
-            new_mean_anomaly -= 360
-
-        np.append(
-            objects,
-            (
-                object[0],
-                object[1],
-                object[2],
-                object[3],
-                new_mean_anomaly,
-                max_norad_cat_id,
-                object[6],
-                object[7],
-                object[8],
-                launch_date,
-                object[10],
-            ),
-        )
-
-
-def remove_objects(
-    objects: np.ndarray, time_removing, frequency=10, average_lifespan=20
-):
-
-    deleted_objects = 0
-    # nu moet de fequentie uit objectenlijst worden gehaald.
-    for object in objects:
-        try:
-            if (
-                object[8] == "LARGE"
-                and (time_removing - object[9]) > average_lifespan
-                and deleted_objects < frequency
-            ):
-                # delete this object x times
-                np.delete(objects, (deleted_objects), axis=0)
-                deleted_objects += 1
-        except:
-            pass
