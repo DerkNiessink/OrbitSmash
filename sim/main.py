@@ -60,7 +60,7 @@ def run_sim(
             pass
         
         try: 
-            debris = random_debris(objects, debris, 1, 100)
+            debris = random_debris(objects, debris, probability, percentage)
             added_debris.append([debris, time])
         except:
             pass
