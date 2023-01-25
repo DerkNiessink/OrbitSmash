@@ -105,7 +105,9 @@ group_amount = dataset.groupby("groups")["groups"].count()
 
 data_debris = dataset.loc[dataset["OBJECT_TYPE"] == "DEBRIS"]
 
+all_groups = []
 for i in group_amount.index:
+    all_groups.append(i)
     if not os.path.exists(f"data_storage/group_{i}"):
         os.makedirs(f"data_storage/group_{i}")
 
@@ -114,8 +116,10 @@ for i in group_amount.index:
 data_array = dataset.to_numpy()
 data_array_debris = data_debris.to_numpy()
 
-group_selection = data_array[:, 12] == 98
-group_selection_debris = data_array_debris[:, 12] == 98
+group_selection = data_array[:, 12] == 80
+group_selection_debris = data_array_debris[:, 12] == 80
 
 data_array_group = data_array[group_selection]
 data_array_debris_group = data_array_debris[group_selection_debris]
+
+#print(len(data_array_group), len(data_array_debris_group))

@@ -79,6 +79,7 @@ def random_debris(
     """
 
     n_new_debris = np.ceil(len(objects) * (percentage / 100))
+
     for _ in range(int(n_new_debris)):
         mean_anomaly, semimajor_axis, matrix = random_params(objects)
         matrices = np.append(matrices, matrix, axis=0)
@@ -92,7 +93,7 @@ def random_debris(
             axis=0,
         )
         debris = np.append(debris, new_debris, axis=0)
-    return objects, debris, matrices, len(new_debris)
+    return objects, debris, matrices, int(n_new_debris)
 
 
 def random_params(objects) -> tuple:
@@ -189,7 +190,7 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
+def check_collisions(objects: np.ndarray, debris: np.ndarray, margin):
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
@@ -211,6 +212,7 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
 
                 if np.linalg.norm(pos1 - pos2) < margin:
                     collision(objects, objects[i], debris[j])
+                    return objects[i], debris[j]
 
 
 @jit(nopython=True)
