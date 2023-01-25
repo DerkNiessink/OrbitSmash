@@ -86,8 +86,14 @@ def run_sim(
 if __name__ == "__main__":
 
     """ GROUP SELECTION """
-    group = 77
+    if len(sys.argv) == 1:
+        print("Give the number of the orbit you want to evaluate")
+        sys.exit()
+
+    elif len(sys.argv) > 1 and len(sys.argv[1]) > 0:
+        group = int(sys.argv[1])
     # roep de variabele 'all_groups' aan als je een lijst wil met alle groepen. 
+
 
     group_selection = data_array[:, 12] == group
     group_selection_debris = data_array_debris[:, 12] == group
@@ -101,8 +107,11 @@ if __name__ == "__main__":
     """ VISUALISATION"""
     view = False
 
-    if len(sys.argv) > 1 and sys.argv[1] == "view":
-        view = False
+    if len(sys.argv) > 3 and sys.argv[2] == "view":
+        view = True
+        
+
+    
 
     parameters, collisions, debris = run_sim(
         objects, debris, margin=100, endtime=31556926, timestep=100, draw=view
