@@ -25,16 +25,7 @@ from scipy.spatial.transform import Rotation
     parameters = ['group', 'epoch', 'endtime', 'timestep', 'probabilty', 'precentage']
     etc. 
     """
-collisions = {"objects": [], "timestamp": float()}
-new_debris = {"timestep": float(), "number_new_debris": int()}
-parameters = {
-    "group": int(),
-    "epoch": int(),
-    "endtime": int(),
-    "timestep": int(),
-    "probabilty": float(),
-    "precentage": int(),
-}
+
 
 JD = 86400  # s
 # standard gravitational parameter = G * M
@@ -190,7 +181,7 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, debris: np.ndarray, margin):
+def check_collisions(objects: np.ndarray, debris: np.ndarray, margin:float):
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.

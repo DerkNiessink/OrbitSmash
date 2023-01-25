@@ -24,11 +24,11 @@ def run_sim(
     margin: int,
     endtime: float,
     timestep: float,
-    epoch=1635771601.0,
-    draw=False,
-    probability=0.5,
-    percentage=10,
-    frequency_new_debris=200000,
+    epoch=float,
+    draw=bool,
+    probability=float,
+    percentage=float,
+    frequency_new_debris=int,
 ):
     """
     Run the simulation by calculating the position of the objects, checking
@@ -111,10 +111,17 @@ if __name__ == "__main__":
         view = True
         
 
-    
-
     parameters, collisions, debris = run_sim(
-        objects, debris, margin=100, endtime=31556926, timestep=100, draw=view
+        objects,
+        debris,
+        margin = 100,
+        endtime = 31556926,
+        timestep = 100,
+        epoch=1635771601.0,
+        draw=False,
+        probability=0.5,
+        percentage=10,
+        frequency_new_debris=200000,
     )
     
 
