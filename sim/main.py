@@ -86,14 +86,14 @@ def run_sim(
 if __name__ == "__main__":
 
     """ GROUP SELECTION """
-    if len(sys.argv) == 1:
-        print("Give the number of the orbit you want to evaluate")
-        sys.exit()
 
-    elif len(sys.argv) > 1 and len(sys.argv[1]) > 0:
+    if len(sys.argv) > 1 and int(sys.argv[1]) in all_groups:
         group = int(sys.argv[1])
-    # roep de variabele 'all_groups' aan als je een lijst wil met alle groepen. 
-
+    
+    else:
+        print("Give a valid number of the orbit you want to evaluate")
+        sys.exit()
+   
 
     group_selection = data_array[:, 12] == group
     group_selection_debris = data_array_debris[:, 12] == group
