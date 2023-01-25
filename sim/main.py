@@ -5,7 +5,7 @@ import csv
 
 from model import *
 from graphics import View
-from data_cleaning import data_array_group, data_array_debris_group
+from data_cleaning import data_array, data_array_debris, all_groups
 
 
 def fast_arr(objects: np.ndarray):
@@ -21,13 +21,14 @@ def fast_arr(objects: np.ndarray):
 def run_sim(
     objects: np.ndarray,
     debris: np.ndarray,
+    margin: int,
     endtime: float,
     timestep: float,
     epoch=1635771601.0,
     draw=False,
-    probability=0.2,
+    probability=0.5,
     percentage=10,
-    frequency_new_debris=None,
+    frequency_new_debris=200000,
 ):
     """
     Run the simulation by calculating the position of the objects, checking
@@ -50,24 +51,26 @@ def run_sim(
     for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
 
         calc_all_positions(objects_fast, matrices, time)
-
-        try:
-            object1, object2 = check_collisions(objects_fast, debris_fast)
+        
+        
+        if check_collisions(objects_fast, debris_fast, margin) != None:
+            object1, object2 = check_collisions(objects_fast, debris_fast, margin)
             collisions.append([object1, object2, time])
-        except:
-            pass
+            
 
         if (
             frequency_new_debris != None
             and (time - epoch) % (frequency_new_debris * timestep) == 0
         ):
             objects_fast, debris_fast, matrices, new_debris = random_debris(
-                objects_fast, debris_fast, matrices, time, 100
+                objects_fast, debris_fast, matrices, time, percentage
             )
+
+            added_debris.append([new_debris, time])
+    
+
             if draw:
                 view.make_new_drawables(objects_fast)
-
-            #added_debris.append([new_debris, time])
 
         if draw:
             view.draw(objects_fast, time - epoch)
@@ -81,19 +84,32 @@ def run_sim(
 
 
 if __name__ == "__main__":
+
+    """ GROUP SELECTION """
+    group = 78
+    # roep de variabele 'all_groups' aan als je een lijst wil met alle groepen. 
+
+    group_selection = data_array[:, 12] == group
+    group_selection_debris = data_array_debris[:, 12] == group
+
+    data_array_group = data_array[group_selection]
+    data_array_debris_group = data_array_debris[group_selection_debris]
+
     objects = data_array_group
     debris = data_array_debris_group
 
+    """ VISUALISATION"""
     view = False
 
     if len(sys.argv) > 1 and sys.argv[1] == "view":
         view = False
 
     parameters, collisions, debris = run_sim(
-        objects, debris, endtime=31556926, timestep=100, draw=view
+        objects, debris, margin=100, endtime=31556926, timestep=100, draw=view
     )
+    
 
-    """ DATA """
+    """ DATA STORAGE """
     with open(f"data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(
