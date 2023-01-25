@@ -165,7 +165,8 @@ def calc_all_positions(
     """
     Calculate the new positions of all objects.
 
-    objects: array of objects to be evaluated, which has to be in following form
+    objects: array of objects to be evaluated. An objects has to be in the
+    following form:
      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
     marices: array of rotation matrices of the objects computed from the 3
     orbital angles.
@@ -193,7 +194,8 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
 
-    objects: array of objects to be evaluated, which has to be in following form
+    objects: array of objects to be evaluated. An object has to be in the
+    following form:
      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
     margin: say that there could be a collision when difference of the x, y
     and z coordinates is smaller than this margin.
@@ -211,15 +213,21 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin=100.0):
                     collision(objects, objects[i], debris[j])
 
 
-def zoom_collision(objects: np.ndarray, epoch, margin=1000):
-    pass
-
-
 @jit(nopython=True)
 def collision(
     objects: np.ndarray, object_involved1: np.ndarray, object_involved2: np.ndarray
 ):
-    """ """
+    """
+    Add two new objects at the positions of the two objects involved in a
+    collision with a slightly adjusted inclination.
+
+    objects: np.array of objects to be evaluated. An object has to be in the
+    following form:
+     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
+    object_involved: np.array of one object in the same form as above.
+
+    Returns a copy of the objects with the 2 new objects appended.
+    """
 
     # Create new debris
     for object in [object_involved1, object_involved2]:
@@ -236,63 +244,3 @@ def collision(
             objects,
             (object[0], object[1], -object[2], -object[3], -object[4], new_inclination),
         )
-
-
-def add_satellites(objects: np.ndarray, current_year, new_satellites=50):
-    max_norad_cat_id += 1
-
-    new_mean_anomaly = object[4] + 180
-    if new_mean_anomaly > 360:
-        new_mean_anomaly -= 360
-
-    launch_date = current_year
-
-    number_of_new_satellites = np.random.normal(
-        loc=new_satellites, scale=new_satellites * 0.2
-    )
-
-    for _ in range(0, number_of_new_satellites):
-        object = np.random.choice(objects)
-
-        max_norad_cat_id += 1
-
-        new_mean_anomaly = object[4] + 180
-        if new_mean_anomaly > 360:
-            new_mean_anomaly -= 360
-
-        np.append(
-            objects,
-            (
-                object[0],
-                object[1],
-                object[2],
-                object[3],
-                new_mean_anomaly,
-                max_norad_cat_id,
-                object[6],
-                object[7],
-                object[8],
-                launch_date,
-                object[10],
-            ),
-        )
-
-
-def remove_objects(
-    objects: np.ndarray, time_removing, frequency=10, average_lifespan=20
-):
-
-    deleted_objects = 0
-    # nu moet de fequentie uit objectenlijst worden gehaald.
-    for object in objects:
-        try:
-            if (
-                object[8] == "LARGE"
-                and (time_removing - object[9]) > average_lifespan
-                and deleted_objects < frequency
-            ):
-                # delete this object x times
-                np.delete(objects, (deleted_objects), axis=0)
-                deleted_objects += 1
-        except:
-            pass

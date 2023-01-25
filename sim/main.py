@@ -27,7 +27,7 @@ def run_sim(
     draw=False,
     probability=0.2,
     percentage=10,
-    frequency_new_debris=1000000000,
+    frequency_new_debris=None,
 ):
     """
     Run the simulation by calculating the position of the objects, checking
@@ -57,7 +57,10 @@ def run_sim(
         except:
             pass
 
-        if (time - epoch) % (frequency_new_debris * timestep) == 0:
+        if (
+            frequency_new_debris != None
+            and (time - epoch) % (frequency_new_debris * timestep) == 0
+        ):
             objects_fast, debris_fast, matrices, new_debris = random_debris(
                 objects_fast, debris_fast, matrices, time, 100
             )
