@@ -86,7 +86,7 @@ def run_sim(
 if __name__ == "__main__":
 
     """ GROUP SELECTION """
-    group = 78
+    group = 77
     # roep de variabele 'all_groups' aan als je een lijst wil met alle groepen. 
 
     group_selection = data_array[:, 12] == group
@@ -110,19 +110,19 @@ if __name__ == "__main__":
     
 
     """ DATA STORAGE """
-    with open(f"data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
+    with open(f"../data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(
             ["group", "epoch", "endtime", "timestep", "probabilty", "precentage"]
         )
         write.writerows(parameters)
 
-    with open(f"data_storage/group_{objects[0][12]}/collisions.csv", "w") as csvfile:
+    with open(f"../data_storage/group_{objects[0][12]}/collisions.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["object1", "object2", "time"])
         write.writerows(collisions)
 
-    with open(f"data_storage/group_{objects[0][12]}/debris.csv", "w") as csvfile:
+    with open(f"../data_storage/group_{objects[0][12]}/debris.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["number_debris", "time"])
         write.writerows(debris)
