@@ -114,14 +114,14 @@ if __name__ == "__main__":
     parameters, collisions, debris = run_sim(
         objects,
         debris,
-        margin = 100,
-        endtime = 31556926,
-        timestep = 100,
-        epoch=1635771601.0,
+        margin = 8000,
+        endtime = 1.578*(10**9), 
+        timestep = 1,
+        epoch=1675209600.0,
         draw=False,
-        probability=0.5,
-        percentage=10,
-        frequency_new_debris=200000,
+        probability=1.0,
+        percentage=3,
+        frequency_new_debris=3.154*(10**7),
     )
     
 
