@@ -2,5 +2,5 @@
 #SBATCH -N 1
 #SBATCH -t 10:00
 echo start of job
-python3.10 main.py 30
+python3.10 main.py 11
 echo end of job
