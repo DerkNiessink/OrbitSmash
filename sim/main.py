@@ -25,7 +25,7 @@ def run_sim(
     timestep: float,
     epoch=1635771601.0,
     draw=False,
-    probability=0.8,
+    probability=0.2,
     percentage=10,
     frequency_new_debris=None,
 ):
@@ -45,6 +45,7 @@ def run_sim(
 
     parameters = []
     collisions = []
+    added_debris = []
 
     for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
 
@@ -60,11 +61,13 @@ def run_sim(
             frequency_new_debris != None
             and (time - epoch) % (frequency_new_debris * timestep) == 0
         ):
-            objects_fast, debris_fast, matrices = random_debris(
+            objects_fast, debris_fast, matrices, new_debris = random_debris(
                 objects_fast, debris_fast, matrices, time, 100
             )
             if draw:
                 view.make_new_drawables(objects_fast)
+
+            #added_debris.append([new_debris, time])
 
         if draw:
             view.draw(objects_fast, time - epoch)
@@ -74,7 +77,7 @@ def run_sim(
         [objects[0][12], epoch, endtime, timestep, probability, percentage]
     )
 
-    return parameters, collisions, debris
+    return parameters, collisions, added_debris
 
 
 if __name__ == "__main__":
@@ -84,7 +87,7 @@ if __name__ == "__main__":
     view = False
 
     if len(sys.argv) > 1 and sys.argv[1] == "view":
-        view = True
+        view = False
 
     parameters, collisions, debris = run_sim(
         objects, debris, endtime=31556926, timestep=100, draw=view
