@@ -114,8 +114,8 @@ for i in group_amount.index:
 data_array = dataset.to_numpy()
 data_array_debris = data_debris.to_numpy()
 
-group_selection = data_array[:, 12] == 11
-group_selection_debris = data_array_debris[:, 12] == 11
+group_selection = data_array[:, 12] == 98
+group_selection_debris = data_array_debris[:, 12] == 98
 
 data_array_group = data_array[group_selection]
 data_array_debris_group = data_array_debris[group_selection_debris]

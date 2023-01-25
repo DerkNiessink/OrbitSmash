@@ -92,7 +92,7 @@ def random_debris(
             axis=0,
         )
         debris = np.append(debris, new_debris, axis=0)
-    return objects, debris, matrices
+    return objects, debris, matrices, len(new_debris)
 
 
 def random_params(objects) -> tuple:
