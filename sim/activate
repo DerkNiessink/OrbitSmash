@@ -3,5 +3,5 @@
 #SBATCH -t 10:00
 #SBATCH --ntasks=2
 echo start of job
-parallel -P $SLURM_NTASKS srun  -n1 --exclusive python3.10 main.py ::: {85..95}
+parallel -P $SLURM_NTASKS srun  -n1 --exclusive main.py ::: {85..95}
 echo end of job
