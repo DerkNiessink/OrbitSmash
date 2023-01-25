@@ -1,5 +1,4 @@
 from vpython import *
-import vpython
 import numpy as np
 
 
