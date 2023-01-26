@@ -127,7 +127,7 @@ if __name__ == "__main__":
         group,
         margin=14000,
         endtime=315569260,
-        timestep=1,
+        timestep=100,
         epoch=1675209600.0,
         draw=False,
         probability=1,
