@@ -124,7 +124,7 @@ if __name__ == "__main__":
         objects,
         debris,
         margin=8000,
-        endtime=157680000,
+        endtime=315569260,
         timestep=1,
         epoch=1675209600.0,
         draw=False,
