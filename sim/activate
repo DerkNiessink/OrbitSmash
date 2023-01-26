@@ -1,8 +1,19 @@
+# #! /bin/bash
+# #SBATCH -N 1
+# #SBATCH -t 12:00:00
+# #SBATCH --ntasks=16
+# #SBATCH --mail-type=ALL
+# echo start of job
+# parallel -P $SLURM_NTASKS srun  -n1 --exclusive python main.py ::: {7..100}
+# echo end of job
+
 #! /bin/bash
 #SBATCH -N 1
 #SBATCH -t 12:00:00
 #SBATCH --ntasks=16
 #SBATCH --mail-type=ALL
-echo start of job
-parallel -P $SLURM_NTASKS srun  -n1 --exclusive python main.py ::: {7..100}
-echo end of job
+for i in {7..100}
+do
+    echo "Running script number $i on the background"
+	python main.py $i & # Put a function in the background
+done
