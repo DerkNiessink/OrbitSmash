@@ -4,7 +4,8 @@ from tqdm import tqdm
 import csv
 
 from model import *
-#from graphics import View
+
+# from graphics import View
 from data_cleaning import data_array, data_array_debris, all_groups
 
 
@@ -48,24 +49,24 @@ def run_sim(
     collisions = []
     added_debris = []
 
-
     for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
 
         calc_all_positions(objects_fast, matrices, time)
-        
-        if check_collisions(objects_fast, debris_fast, margin) != None:
-            # als check collision wordt aangeroepen
-            objects, object1, object2 = check_collisions(objects_fast, debris_fast, margin)
 
-            # dan wordt collision ook aangeroepen en de nieuwe debris in new_debris gezet
-            new_debris = collision(objects, object1, object2)
+        collided_objects = check_collisions(objects_fast, debris_fast, margin)
+        if collided_objects != None:
 
-            # hier wordt de new debris aan de objecten toegevoegd
+            object1, object2 = collided_objects[0], collided_objects[1]
+
+            # Compute new debris
+            new_debris = collision(object1, object2)
+
+            # Add new debris to the total objects an debris arrays
             objects_fast = np.concatenate((objects_fast, new_debris), axis=0)
-        
-            # dit is om de data op te slaan 
-            collisions.append([object1, object2, time])
+            debris_fast = np.concatenate((debris_fast, new_debris), axis=0)
 
+            # Save the collision data
+            collisions.append([object1, object2, time])
 
         if (
             frequency_new_debris != None
@@ -76,7 +77,6 @@ def run_sim(
             )
 
             added_debris.append([new_debris, time])
-    
 
             if draw:
                 view.make_new_drawables(objects_fast)
@@ -94,15 +94,14 @@ def run_sim(
 
 if __name__ == "__main__":
 
-    """ GROUP SELECTION """
+    """GROUP SELECTION"""
 
     if len(sys.argv) > 1 and int(sys.argv[1]) in all_groups:
         group = int(sys.argv[1])
-    
+
     else:
         print("Give a valid number of the orbit you want to evaluate")
         sys.exit()
-   
 
     group_selection = data_array[:, 12] == group
     group_selection_debris = data_array_debris[:, 12] == group
@@ -118,21 +117,19 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 3 and sys.argv[2] == "view":
         view = True
-        
 
     parameters, collisions, debris = run_sim(
         objects,
         debris,
-        margin = 8000,
-        endtime =  315569260, 
-        timestep = 1,
+        margin=8000,
+        endtime=315569260,
+        timestep=1,
         epoch=1675209600.0,
         draw=False,
-        probability=1.0,
+        probability=0,
         percentage=3,
-        frequency_new_debris=3.154*(10**7),
+        frequency_new_debris=3.154 * (10**7),
     )
-    
 
     """ DATA STORAGE """
     with open(f"data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:

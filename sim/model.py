@@ -181,7 +181,7 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, debris: np.ndarray, margin:float):
+def check_collisions(objects: np.ndarray, debris: np.ndarray, margin: float):
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
@@ -202,21 +202,18 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin:float):
                 pos2 = np.array([debris[j][3], debris[j][4], debris[j][5]])
 
                 if np.linalg.norm(pos1 - pos2) < margin:
-                    return objects, objects[i], debris[j]
+                    return objects[i], debris[j]
 
 
 @jit(nopython=True)
-def collision(
-    objects: np.ndarray, object_involved1: np.ndarray, object_involved2: np.ndarray
-):
+def collision(object_involved1: np.ndarray, object_involved2: np.ndarray):
     """
     Add two new objects at the positions of the two objects involved in a
     collision with a slightly adjusted inclination.
 
-    objects: np.array of objects to be evaluated. An object has to be in the
+    object_involved: np.array of the object to be evaluated and has to be in the
     following form:
      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
-    object_involved: np.array of one object in the same form as above.
 
     Returns a copy of the objects with the 2 new objects appended.
     """
@@ -232,6 +229,8 @@ def collision(
         if new_inclination < 0:
             new_inclination += 180
 
-        new_debris.append([object[0], object[1], -object[2], -object[3], -object[4], new_inclination])
-        
+        new_debris.append(
+            [object[0], object[1], -object[2], -object[3], -object[4], new_inclination]
+        )
+
     return new_debris
