@@ -51,7 +51,7 @@ def run_sim(
     added_debris = []
 
     for time in tqdm(
-        range(int(epoch), int(epoch + endtime), timestep), ncols=100, position=group - 7
+        range(int(epoch), int(epoch + endtime), timestep), ncols=100, position=group - 6
     ):
 
         calc_all_positions(objects_fast, matrices, time)
