@@ -49,8 +49,10 @@ def run_sim(
     collisions = []
     added_debris = []
 
-    for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
-
+    for time in tqdm(
+        np.arange(int(epoch), int(epoch + endtime), int(timestep), dtype="uint32"),
+        ncols=100,
+    ):
         calc_all_positions(objects_fast, matrices, time)
 
         collided_objects = check_collisions(objects_fast, debris_fast, margin)
