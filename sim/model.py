@@ -202,8 +202,7 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin:float):
                 pos2 = np.array([debris[j][3], debris[j][4], debris[j][5]])
 
                 if np.linalg.norm(pos1 - pos2) < margin:
-                    collision(objects, objects[i], debris[j])
-                    return objects[i], debris[j]
+                    return objects, objects[i], debris[j]
 
 
 @jit(nopython=True)
@@ -221,7 +220,7 @@ def collision(
 
     Returns a copy of the objects with the 2 new objects appended.
     """
-
+    new_debris = list()
     # Create new debris
     for object in [object_involved1, object_involved2]:
 
@@ -232,9 +231,7 @@ def collision(
             new_inclination -= 180
         if new_inclination < 0:
             new_inclination += 180
+
+        new_debris.append([object[0], object[1], -object[2], -object[3], -object[4], new_inclination])
         
-        objects = np.append(
-            objects,
-            (object[0], object[1], -object[2], -object[3], -object[4], new_inclination),
-        )
-        return 
+    return new_debris

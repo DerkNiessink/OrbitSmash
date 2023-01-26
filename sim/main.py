@@ -48,15 +48,24 @@ def run_sim(
     collisions = []
     added_debris = []
 
+
     for time in tqdm(np.arange(epoch, epoch + endtime, timestep), ncols=100):
 
         calc_all_positions(objects_fast, matrices, time)
         
-        
         if check_collisions(objects_fast, debris_fast, margin) != None:
-            object1, object2 = check_collisions(objects_fast, debris_fast, margin)
+            # als check collision wordt aangeroepen
+            objects, object1, object2 = check_collisions(objects_fast, debris_fast, margin)
+
+            # dan wordt collision ook aangeroepen en de nieuwe debris in new_debris gezet
+            new_debris = collision(objects, object1, object2)
+
+            # hier wordt de new debris aan de objecten toegevoegd
+            objects_fast = np.concatenate((objects_fast, new_debris), axis=0)
+        
+            # dit is om de data op te slaan 
             collisions.append([object1, object2, time])
-            
+
 
         if (
             frequency_new_debris != None
@@ -115,7 +124,7 @@ if __name__ == "__main__":
         objects,
         debris,
         margin = 8000,
-        endtime = 315569260, 
+        endtime =  315569260, 
         timestep = 1,
         epoch=1675209600.0,
         draw=False,
