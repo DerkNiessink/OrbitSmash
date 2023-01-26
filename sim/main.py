@@ -25,11 +25,12 @@ def run_sim(
     margin: int,
     endtime: float,
     timestep: float,
-    epoch=float,
-    draw=bool,
-    probability=float,
-    percentage=float,
-    frequency_new_debris=int,
+    epoch: float,
+    draw: bool,
+    probability: float,
+    percentage: float,
+    frequency_new_debris: int,
+    group: int,
 ):
     """
     Run the simulation by calculating the position of the objects, checking
@@ -49,7 +50,7 @@ def run_sim(
     collisions = []
     added_debris = []
 
-    for time in tqdm(range(int(epoch), int(epoch + endtime), timestep), ncols=100):
+    for time in tqdm(range(int(epoch), int(epoch + endtime), timestep), ncols=100, position=group):
 
         calc_all_positions(objects_fast, matrices, time)
 
@@ -129,6 +130,7 @@ if __name__ == "__main__":
         probability=1,
         percentage=2,
         frequency_new_debris=3.154 * (10**7),
+        group
     )
 
     """ DATA STORAGE """
