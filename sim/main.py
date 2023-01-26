@@ -4,7 +4,7 @@ from tqdm import tqdm
 import csv
 
 from model import *
-from graphics import View
+#from graphics import View
 from data_cleaning import data_array, data_array_debris, all_groups
 
 
@@ -35,8 +35,8 @@ def run_sim(
     for collisions and handling the collisions.
     """
 
-    if draw:
-        view = View(objects)
+    # if draw:
+    #     view = View(objects)
 
     initialize_positions(objects, epoch)
 
@@ -115,7 +115,7 @@ if __name__ == "__main__":
         objects,
         debris,
         margin = 8000,
-        endtime = 1.578*(10**9), 
+        endtime = 315569260, 
         timestep = 1,
         epoch=1675209600.0,
         draw=False,
