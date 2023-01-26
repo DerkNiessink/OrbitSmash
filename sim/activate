@@ -1,5 +1,5 @@
 #! /bin/bash
-#SBATCH -N 1
+#SBATCH -N 6
 #SBATCH -t 12:00:00
 #SBATCH --ntasks=16
 #SBATCH --mail-type=ALL
