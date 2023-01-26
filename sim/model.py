@@ -232,8 +232,9 @@ def collision(
             new_inclination -= 180
         if new_inclination < 0:
             new_inclination += 180
-
-        return np.append(
+        
+        objects = np.append(
             objects,
             (object[0], object[1], -object[2], -object[3], -object[4], new_inclination),
         )
+        return 
