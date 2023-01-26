@@ -3,10 +3,11 @@
 #SBATCH -t 12:00:00
 #SBATCH --ntasks=16
 #SBATCH --mail-type=ALL
-echo "Start of task"
+echo "Start of job"
 for i in {7..100}
 do
     echo "Running script number $i on the background"
 	python main.py $i & # Put a function in the background
 done
-echo "End of task"
+wait
+echo "End of job"
