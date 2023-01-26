@@ -22,6 +22,7 @@ def fast_arr(objects: np.ndarray):
 def run_sim(
     objects: np.ndarray,
     debris: np.ndarray,
+    group: int,
     margin: int,
     endtime: float,
     timestep: float,
@@ -30,7 +31,6 @@ def run_sim(
     probability: float,
     percentage: float,
     frequency_new_debris: int,
-    group: int,
 ):
     """
     Run the simulation by calculating the position of the objects, checking
@@ -50,7 +50,9 @@ def run_sim(
     collisions = []
     added_debris = []
 
-    for time in tqdm(range(int(epoch), int(epoch + endtime), timestep), ncols=100, position=group):
+    for time in tqdm(
+        range(int(epoch), int(epoch + endtime), timestep), ncols=100, position=group
+    ):
 
         calc_all_positions(objects_fast, matrices, time)
 
@@ -122,6 +124,7 @@ if __name__ == "__main__":
     parameters, collisions, debris = run_sim(
         objects,
         debris,
+        group,
         margin=14000,
         endtime=315569260,
         timestep=1,
@@ -130,7 +133,6 @@ if __name__ == "__main__":
         probability=1,
         percentage=2,
         frequency_new_debris=3.154 * (10**7),
-        group
     )
 
     """ DATA STORAGE """
