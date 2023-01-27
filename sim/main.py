@@ -125,14 +125,14 @@ if __name__ == "__main__":
         objects,
         debris,
         group,
-        margin=14000,
+        margin=700000,
         endtime=315569260,
         timestep=100,
         epoch=1675209600.0,
         draw=False,
         probability=1,
-        percentage=2,
-        frequency_new_debris=3.154 * (10**7),
+        percentage=3,
+        frequency_new_debris=3.154 * (10**5),
     )
 
     """ DATA STORAGE """

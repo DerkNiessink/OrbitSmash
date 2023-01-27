@@ -87,7 +87,7 @@ dataset["rotation_matrix"] = matrices
 
 """ MAKING GROUPS """
 linspace = np.linspace(
-    min(dataset["SEMIMAJOR_AXIS"]), max(dataset["SEMIMAJOR_AXIS"]), num=100
+    min(dataset["SEMIMAJOR_AXIS"]), max(dataset["SEMIMAJOR_AXIS"]), num=400
 )
 bins = np.digitize(np.array(dataset["SEMIMAJOR_AXIS"]), linspace, right=False)
 dataset["groups"] = bins
@@ -98,10 +98,11 @@ group = dataset.groupby("groups")["groups"].count() != 1
 delete = list(group.loc[group == False].index)
 
 # the groups that have no debris
-delete.extend([6, 7, 9, 10])
+# delete.extend([6, 7, 9, 10])
 
 dataset = dataset[~dataset["groups"].isin(delete)]
 group_amount = dataset.groupby("groups")["groups"].count()
+print(group_amount.to_string())
 
 data_debris = dataset.loc[dataset["OBJECT_TYPE"] == "DEBRIS"]
 
