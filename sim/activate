@@ -1,10 +1,10 @@
 #! /bin/bash
-#SBATCH -N 6
-#SBATCH -t 12:00:00
+#SBATCH -N 12
+#SBATCH -t 48:00:00
 #SBATCH --ntasks=15
 
 echo "Start of job"
-for i in {23..399}
+for i in {23..210}
 do
     echo "Running script number $i on the background"
 	python main.py $i & # Put a function in the background

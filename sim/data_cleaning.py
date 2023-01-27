@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation
 import os
 
 
-dataset = pd.read_csv("data/satellites.csv")
+dataset = pd.read_csv("../data/satellites.csv")
 
 # removing irrelevant columns
 dataset = dataset.drop(
@@ -93,18 +93,21 @@ bins = np.digitize(np.array(dataset["SEMIMAJOR_AXIS"]), linspace, right=False)
 dataset["groups"] = bins
 
 
-small_group = dataset.groupby("groups")["groups"].count() != 1 
+small_group = dataset.groupby("groups")["groups"].count() != 1
 delete = list(small_group.loc[small_group == False].index)
 
 # the groups that have no debris
-grouped = dataset.groupby('groups')
-debris_groups = grouped.filter(lambda x: all(x['OBJECT_TYPE'].isin(['TBA', 'ROCKET BODY', 'PAYLOAD'])))
-                                                                
+grouped = dataset.groupby("groups")
+debris_groups = grouped.filter(
+    lambda x: all(x["OBJECT_TYPE"].isin(["TBA", "ROCKET BODY", "PAYLOAD"]))
+)
+
 
 no_debris = []
-for i in set(debris_groups['groups']):
+for i in set(debris_groups["groups"]):
     no_debris.append(i)
 
+delete.extend([84])
 delete.extend(no_debris)
 
 
@@ -118,7 +121,6 @@ for i in group_amount.index:
     all_groups.append(i)
     if not os.path.exists(f"../data_storage/group_{i}"):
         os.makedirs(f"../data_storage/group_{i}")
-
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
