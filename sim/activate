@@ -1,8 +1,8 @@
 #! /bin/bash
 #SBATCH -N 6
 #SBATCH -t 12:00:00
-#SBATCH --ntasks=16
-#SBATCH --mail-type=ALL
+#SBATCH --ntasks=15
+
 echo "Start of job"
 for i in {23..50}
 do
