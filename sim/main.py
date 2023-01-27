@@ -53,10 +53,8 @@ def run_sim(
     for time in tqdm(
         range(int(epoch), int(epoch + endtime), timestep),
         ncols=100,
-        position=group - 22,
         desc=f"group: {group}",
     ):
-
         calc_all_positions(objects_fast, matrices, time)
 
         collided_objects = check_collisions(objects_fast, debris_fast, margin)
@@ -155,3 +153,5 @@ if __name__ == "__main__":
         write = csv.writer(csvfile)
         write.writerow(["number_debris", "time"])
         write.writerows(debris)
+
+    print(f"group {group} done running")
