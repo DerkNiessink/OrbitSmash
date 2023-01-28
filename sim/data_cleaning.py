@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation
 import os
 
 
-dataset = pd.read_csv("../data/satellites.csv")
+dataset = pd.read_csv("data/satellites.csv")
 
 # removing irrelevant columns
 dataset = dataset.drop(
@@ -113,7 +113,7 @@ dataset = subgroups_.loc[subgroups_['groups'] != 19]
 # dataset = dataset.loc[dataset['groups'] != 21]
 # dataset = dataset.append(group_21, ignore_index=True)
 
-#print([i for i in dataset.groupby("groups")["groups"].count().items()])
+
 
 small_group = dataset.groupby("groups")["groups"].count() != 1 
 delete = list(small_group.loc[small_group == False].index)
@@ -133,13 +133,14 @@ delete.extend(no_debris)
 dataset = dataset[~dataset["groups"].isin(delete)]
 group_amount = dataset.groupby("groups")["groups"].count()
 
+
 data_debris = dataset.loc[dataset["OBJECT_TYPE"] == "DEBRIS"]
 
 all_groups = []
 for i in group_amount.index:
     all_groups.append(i)
-    if not os.path.exists(f"../data_storage/group_{i}"):
-        os.makedirs(f"../data_storage/group_{i}")
+    if not os.path.exists(f"sim/data_storage/group_{i}"):
+        os.makedirs(f"sim/data_storage/group_{i}")
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
