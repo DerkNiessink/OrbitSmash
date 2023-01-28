@@ -98,11 +98,12 @@ linspace_sub = np.linspace(
     min(subgroups["SEMIMAJOR_AXIS"]), max(subgroups["SEMIMAJOR_AXIS"]), num=100
 )
 bins_sub = (np.digitize(np.array(subgroups["SEMIMAJOR_AXIS"]), linspace_sub, right=False))
-subgroups['groups'] = bins_sub
-#print(subgroups)
+subgroups_ = subgroups.copy()
+subgroups_['groups'] = bins_sub
 
 
-dataset = subgroups.loc[subgroups['groups'] != 19]
+
+dataset = subgroups_.loc[subgroups_['groups'] != 19]
 # linspace_21 = np.linspace(
 #     min(group_21["SEMIMAJOR_AXIS"]), max(group_21["SEMIMAJOR_AXIS"]), num=20
 # )
@@ -140,8 +141,6 @@ for i in group_amount.index:
     if not os.path.exists(f"../data_storage/group_{i}"):
         os.makedirs(f"../data_storage/group_{i}")
 
-print(dataset)
-print([i for i in dataset.groupby("groups")["groups"].count().items()])
 # Dataset to numpy array
 data_array = dataset.to_numpy()
 data_array_debris = data_debris.to_numpy()
