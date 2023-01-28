@@ -92,22 +92,30 @@ linspace = np.linspace(
 bins = np.digitize(np.array(dataset["SEMIMAJOR_AXIS"]), linspace, right=False)
 dataset["groups"] = bins
 
+# group_21 = dataset.loc[dataset['groups'] == 21]
+# linspace_21 = np.linspace(
+#     min(group_21["SEMIMAJOR_AXIS"]), max(group_21["SEMIMAJOR_AXIS"]), num=20
+# )
+# bins21 = (np.digitize(np.array(group_21["SEMIMAJOR_AXIS"]), linspace_21, right=False) * 0.05) + 21
+# group_21['groups'] = bins21
+# print(group_21.groupby("groups")["groups"].count())
+# dataset = dataset.loc[dataset['groups'] != 21]
+# dataset = dataset.append(group_21, ignore_index=True)
 
-small_group = dataset.groupby("groups")["groups"].count() != 1
+#print([i for i in dataset.groupby("groups")["groups"].count().items()])
+
+small_group = dataset.groupby("groups")["groups"].count() != 1 
 delete = list(small_group.loc[small_group == False].index)
 
 # the groups that have no debris
-grouped = dataset.groupby("groups")
-debris_groups = grouped.filter(
-    lambda x: all(x["OBJECT_TYPE"].isin(["TBA", "ROCKET BODY", "PAYLOAD"]))
-)
-
+grouped = dataset.groupby('groups')
+debris_groups = grouped.filter(lambda x: all(x['OBJECT_TYPE'].isin(['TBA', 'ROCKET BODY', 'PAYLOAD'])))
+                                                                
 
 no_debris = []
-for i in set(debris_groups["groups"]):
+for i in set(debris_groups['groups']):
     no_debris.append(i)
 
-delete.extend([84])
 delete.extend(no_debris)
 
 
@@ -121,6 +129,7 @@ for i in group_amount.index:
     all_groups.append(i)
     if not os.path.exists(f"../data_storage/group_{i}"):
         os.makedirs(f"../data_storage/group_{i}")
+
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
