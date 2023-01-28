@@ -107,7 +107,6 @@ no_debris = []
 for i in set(debris_groups["groups"]):
     no_debris.append(i)
 
-delete.extend([84])
 delete.extend(no_debris)
 
 
