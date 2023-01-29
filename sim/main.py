@@ -126,25 +126,29 @@ if __name__ == "__main__":
         objects,
         debris,
         group,
-        margin=800000,
-        endtime= 315569260,
+        margin=1_400_000,
+        endtime=315569260,
         timestep=100,
         epoch=1675209600.0,
         draw=False,
         probability=1,
-        percentage=3,
-        frequency_new_debris= 31556926 ,
+        percentage=0,
+        frequency_new_debris=31556926,
     )
 
     """ DATA STORAGE """
-    with open(f"sim/data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
+    with open(
+        f"sim/data_storage/group_{objects[0][12]}/parameters.csv", "w"
+    ) as csvfile:
         write = csv.writer(csvfile)
         write.writerow(
             ["group", "epoch", "endtime", "timestep", "probabilty", "precentage"]
         )
         write.writerows(parameters)
 
-    with open(f"sim/data_storage/group_{objects[0][12]}/collisions.csv", "w") as csvfile:
+    with open(
+        f"sim/data_storage/group_{objects[0][12]}/collisions.csv", "w"
+    ) as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["object1", "object2", "time"])
         write.writerows(collisions)

@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation
 import os
 
 
-dataset = pd.read_csv("data/satellites.csv")
+dataset = pd.read_csv("../data/satellites.csv")
 
 # removing irrelevant columns
 dataset = dataset.drop(
@@ -93,17 +93,16 @@ bins = np.digitize(np.array(dataset["SEMIMAJOR_AXIS"]), linspace, right=False)
 dataset["groups"] = bins
 
 
-subgroups =  dataset.loc[dataset['groups'].isin([i for i in range(17,42)])]
+subgroups = dataset.loc[dataset["groups"].isin([i for i in range(17, 42)])]
 linspace_sub = np.linspace(
     min(subgroups["SEMIMAJOR_AXIS"]), max(subgroups["SEMIMAJOR_AXIS"]), num=100
 )
-bins_sub = (np.digitize(np.array(subgroups["SEMIMAJOR_AXIS"]), linspace_sub, right=False))
+bins_sub = np.digitize(np.array(subgroups["SEMIMAJOR_AXIS"]), linspace_sub, right=False)
 subgroups_ = subgroups.copy()
-subgroups_['groups'] = bins_sub
+subgroups_["groups"] = bins_sub
 
 
-
-dataset = subgroups_.loc[subgroups_['groups'] != 19]
+dataset = subgroups_.loc[subgroups_["groups"] != 19]
 # linspace_21 = np.linspace(
 #     min(group_21["SEMIMAJOR_AXIS"]), max(group_21["SEMIMAJOR_AXIS"]), num=20
 # )
@@ -114,17 +113,18 @@ dataset = subgroups_.loc[subgroups_['groups'] != 19]
 # dataset = dataset.append(group_21, ignore_index=True)
 
 
-
-small_group = dataset.groupby("groups")["groups"].count() != 1 
+small_group = dataset.groupby("groups")["groups"].count() != 1
 delete = list(small_group.loc[small_group == False].index)
 
 # the groups that have no debris
-grouped = dataset.groupby('groups')
-debris_groups = grouped.filter(lambda x: all(x['OBJECT_TYPE'].isin(['TBA', 'ROCKET BODY', 'PAYLOAD'])))
-                                                                
+grouped = dataset.groupby("groups")
+debris_groups = grouped.filter(
+    lambda x: all(x["OBJECT_TYPE"].isin(["TBA", "ROCKET BODY", "PAYLOAD"]))
+)
+
 
 no_debris = []
-for i in set(debris_groups['groups']):
+for i in set(debris_groups["groups"]):
     no_debris.append(i)
 
 delete.extend(no_debris)
