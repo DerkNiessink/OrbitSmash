@@ -139,8 +139,8 @@ data_debris = dataset.loc[dataset["OBJECT_TYPE"] == "DEBRIS"]
 all_groups = []
 for i in group_amount.index:
     all_groups.append(i)
-    if not os.path.exists(f"sim/data_storage/group_{i}"):
-        os.makedirs(f"sim/data_storage/group_{i}")
+    if not os.path.exists(f"data_storage/group_{i}"):
+        os.makedirs(f"data_storage/group_{i}")
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
