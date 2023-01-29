@@ -140,7 +140,7 @@ all_groups = []
 for i in group_amount.index:
     all_groups.append(i)
     if not os.path.exists(f"data_storage/group_{i}"):
-        os.makedirs(f"data_storage/group_{i}")
+        os.makedirs(f"data_storage/group_{i}", exist_ok=True)
 
 # Dataset to numpy array
 data_array = dataset.to_numpy()
