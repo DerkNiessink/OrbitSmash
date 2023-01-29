@@ -154,4 +154,4 @@ if __name__ == "__main__":
         write.writerow(["number_debris", "time"])
         write.writerows(debris)
 
-    print(f"group {group} done running")
+    print(f"\ngroup {group} done running")
