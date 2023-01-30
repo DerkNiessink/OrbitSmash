@@ -1,10 +1,14 @@
 #! /bin/bash
-#SBATCH -N 1
-#SBATCH -t 1:00:00
-#SBATCH --ntasks=1
+#SBATCH -N 7
+#SBATCH -t 1-00:00:00
+#SBATCH --ntasks=15
 
 echo "Start of job"
-
-python main.py 29
+for i in {1..100}
+do
+    echo "Running $i"
+    python main.py $i &
+done 
+wait 
 
 echo "End of job"

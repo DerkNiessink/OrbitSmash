@@ -154,7 +154,7 @@ def calc_all_positions(
 
     objects: array of objects to be evaluated. An objects has to be in the
     following form:
-     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
+     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE', 'pos_x', pos_y', 'pos_z']
     marices: array of rotation matrices of the objects computed from the 3
     orbital angles.
     time: time at which the positions will be calculated.
