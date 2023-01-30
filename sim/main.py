@@ -91,7 +91,7 @@ def run_sim(
     parameters.append(
         [objects[0][12], epoch, endtime, timestep, probability, percentage]
     )
-
+    print(parameters, collisions, added_debris)
     return parameters, collisions, added_debris
 
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
         objects,
         group,
         draw,
-        margin= 1000,
+        margin= 1500,
         endtime=315569260/100,
         timestep=100,
         epoch=1675209600.0,
