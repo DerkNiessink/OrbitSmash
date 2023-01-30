@@ -60,7 +60,6 @@ def run_sim(
         collided_objects = check_collisions(objects_fast, margin)
         if collided_objects != None:
             object1, object2 = collided_objects[0], collided_objects[1]
-            print("!!!!")
 
             # Compute new debris
             new_debris = collision(object1, object2)
@@ -78,7 +77,6 @@ def run_sim(
             objects_fast, matrices, new_debris = random_debris(
                 objects_fast, matrices, time, percentage
             )
-            # print('new debris')
             added_debris.append([new_debris, time])
 
             if draw:
@@ -91,7 +89,7 @@ def run_sim(
     parameters.append(
         [objects[0][12], epoch, endtime, timestep, probability, percentage]
     )
-    print(parameters, collisions, added_debris)
+
     return parameters, collisions, added_debris
 
 
@@ -121,13 +119,13 @@ if __name__ == "__main__":
         objects,
         group,
         draw,
-        margin=100,
+        margin=500,
         endtime=315569260,
         timestep=100,
         epoch=1675209600.0,
         probability=0,
         percentage=0,
-        frequency_new_debris=315569260,
+        frequency_new_debris=None,
     )
 
     """ DATA STORAGE """

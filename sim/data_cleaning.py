@@ -123,7 +123,6 @@ delete.extend(no_debris)
 dataset = dataset[~dataset["groups"].isin(delete)]
 group_amount = dataset.groupby("groups")["groups"].count()
 
-# print(group_amount.to_string())
 all_groups = []
 for i in group_amount.index:
     all_groups.append(i)
