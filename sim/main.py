@@ -57,13 +57,12 @@ def run_sim(
 
         collided_objects = check_collisions(objects_fast, margin)
         if collided_objects != None:
-            print("Collision!")
+            #print("Collision!")
             object1, object2 = collided_objects[0], collided_objects[1]
 
             # Compute new debris
             new_debris = collision(object1, object2)
             
-
             # Add new debris to the total objects an debris arrays
             objects_fast = np.concatenate((objects_fast, new_debris), axis=0)
 
@@ -77,7 +76,7 @@ def run_sim(
             objects_fast, matrices, new_debris = random_debris(
                 objects_fast, matrices, time, percentage
             )
-
+            #print('new debris')
             added_debris.append([new_debris, time])
 
             if draw:
@@ -125,14 +124,14 @@ if __name__ == "__main__":
         timestep=100,
         epoch=1675209600.0,
         probability=1,
-        percentage=0,
-        frequency_new_debris=31556926,
+        percentage=1,
+        frequency_new_debris=12000,
     )
 
     """ DATA STORAGE """
     with open(
-        f"sim/data_storage/group_{objects[0][12]}/parameters.csv", "w"
-    ) as csvfile:
+        f"data_storage/group_{objects[0][12]}/parameters.csv", "w"
+        ) as csvfile:
         write = csv.writer(csvfile)
         write.writerow(
             ["group", "epoch", "endtime", "timestep", "probabilty", "precentage"]
@@ -140,14 +139,15 @@ if __name__ == "__main__":
         write.writerows(parameters)
 
     with open(
-        f"sim/data_storage/group_{objects[0][12]}/collisions.csv", "w"
+        f"data_storage/group_{objects[0][12]}/collisions.csv", "w"
     ) as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["object1", "object2", "time"])
         write.writerows(collisions)
 
-    with open(f"sim/data_storage/group_{objects[0][12]}/debris.csv", "w") as csvfile:
+    with open(f"data_storage/group_{objects[0][12]}/debris.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["number_debris", "time"])
+        write.writerows(added_debris)
 
     print(f"\ngroup {group} done running")
