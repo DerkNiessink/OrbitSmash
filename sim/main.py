@@ -57,8 +57,10 @@ def run_sim(
 
         collided_objects = check_collisions(objects_fast, margin)
         if collided_objects != None:
-            #print("Collision!")
-            object1, object2 = collided_objects[0], collided_objects[1]
+            print("Collision!")
+
+            #object1, object2 = collided_objects[0], collided_objects[1]
+            object1, object2 = check_collisions(objects_fast, margin)
 
             # Compute new debris
             new_debris = collision(object1, object2)
@@ -119,13 +121,13 @@ if __name__ == "__main__":
         objects,
         group,
         draw,
-        margin=400,
+        margin= 1000,
         endtime=315569260/100,
         timestep=100,
         epoch=1675209600.0,
         probability=1,
-        percentage=1,
-        frequency_new_debris=12000,
+        percentage=0,
+        frequency_new_debris=315569260,
     )
 
     """ DATA STORAGE """
