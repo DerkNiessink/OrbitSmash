@@ -58,7 +58,7 @@ def run_sim(
         calc_all_positions(objects_fast, matrices, time)
 
         if len(objects_fast) > 500:
-            print(f"\nGroup {group} procces killed.")
+            print(f"\nGroup {group} process killed.")
             sys.exit()
 
         collided_objects = check_collisions(objects_fast, margin)
