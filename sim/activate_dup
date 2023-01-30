@@ -1,0 +1,8 @@
+#! /bin/bash
+#SBATCH -N 1
+#SBATCH -t 1:00:00
+#SBATCH --ntasks=1
+
+echo "Start of job"
+python main.py 7 
+echo "End of job"

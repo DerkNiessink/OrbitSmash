@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation
 import os
 
 
-dataset = pd.read_csv("../data/satellites.csv")
+dataset = pd.read_csv("data/satellites.csv")
 
 # removing irrelevant columns
 dataset = dataset.drop(
@@ -101,17 +101,8 @@ bins_sub = np.digitize(np.array(subgroups["SEMIMAJOR_AXIS"]), linspace_sub, righ
 subgroups_ = subgroups.copy()
 subgroups_["groups"] = bins_sub
 
-
+dataset = subgroups_
 dataset = subgroups_.loc[subgroups_["groups"] != 19]
-# linspace_21 = np.linspace(
-#     min(group_21["SEMIMAJOR_AXIS"]), max(group_21["SEMIMAJOR_AXIS"]), num=20
-# )
-# bins21 = (np.digitize(np.array(group_21["SEMIMAJOR_AXIS"]), linspace_21, right=False) * 0.05) + 21
-# group_21['groups'] = bins21
-# print(group_21.groupby("groups")["groups"].count())
-# dataset = dataset.loc[dataset['groups'] != 21]
-# dataset = dataset.append(group_21, ignore_index=True)
-
 
 small_group = dataset.groupby("groups")["groups"].count() != 1
 delete = list(small_group.loc[small_group == False].index)
@@ -122,7 +113,6 @@ debris_groups = grouped.filter(
     lambda x: all(x["OBJECT_TYPE"].isin(["TBA", "ROCKET BODY", "PAYLOAD"]))
 )
 
-
 no_debris = []
 for i in set(debris_groups["groups"]):
     no_debris.append(i)
@@ -132,22 +122,38 @@ delete.extend(no_debris)
 
 dataset = dataset[~dataset["groups"].isin(delete)]
 group_amount = dataset.groupby("groups")["groups"].count()
-
+#print(group_amount.to_string())
 
 data_debris = dataset.loc[dataset["OBJECT_TYPE"] == "DEBRIS"]
 
 all_groups = []
 for i in group_amount.index:
     all_groups.append(i)
-    if not os.path.exists(f"data_storage/group_{i}"):
-        os.makedirs(f"data_storage/group_{i}", exist_ok=True)
+    if not os.path.exists(f"sim/data_storage/group_{i}"):
+        os.makedirs(f"sim/data_storage/group_{i}", exist_ok=True)
 
+
+""" dataset verdelen in sateliet en niet-sateliet"""
+lijst = []
+for i,j in dataset["OBJECT_TYPE"].items():
+    if j == 'PAYLOAD':
+        lijst.append(0)
+    else:
+        lijst.append(1)
+
+dataset['object_bool'] = lijst
+
+
+""" FINAL DATASET """
 # Dataset to numpy array
 data_array = dataset.to_numpy()
-data_array_debris = data_debris.to_numpy()
 
-group_selection = data_array[:, 12] == 8
-group_selection_debris = data_array_debris[:, 12] == 8
 
-data_array_group = data_array[group_selection]
-data_array_debris_group = data_array_debris[group_selection_debris]
+
+# data_array_debris = data_debris.to_numpy()
+
+# group_selection = data_array[:, 12] == 8
+# group_selection_debris = data_array_debris[:, 12] == 8
+
+# data_array_group = data_array[group_selection]
+# data_array_debris_group = data_array_debris[group_selection_debris]
