@@ -16,7 +16,9 @@ def fast_arr(objects: np.ndarray):
     Returns array of the form:
       -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS  'pos_x', pos_y', 'pos_z']
     """
-    return np.array([[object[0], object[4], object[6], object[13], 0, 0, 0] for object in objects])
+    return np.array(
+        [[object[0], object[4], object[6], object[13], 0, 0, 0] for object in objects]
+    )
 
 
 def run_sim(
@@ -57,13 +59,12 @@ def run_sim(
 
         collided_objects = check_collisions(objects_fast, margin)
         if collided_objects != None:
-
-            #object1, object2 = collided_objects[0], collided_objects[1]
-            object1, object2 = check_collisions(objects_fast, margin)
+            object1, object2 = collided_objects[0], collided_objects[1]
+            print("!!!!")
 
             # Compute new debris
             new_debris = collision(object1, object2)
-            
+
             # Add new debris to the total objects an debris arrays
             objects_fast = np.concatenate((objects_fast, new_debris), axis=0)
 
@@ -77,7 +78,7 @@ def run_sim(
             objects_fast, matrices, new_debris = random_debris(
                 objects_fast, matrices, time, percentage
             )
-            #print('new debris')
+            # print('new debris')
             added_debris.append([new_debris, time])
 
             if draw:
@@ -120,7 +121,7 @@ if __name__ == "__main__":
         objects,
         group,
         draw,
-        margin= 1400,
+        margin=100,
         endtime=315569260,
         timestep=100,
         epoch=1675209600.0,
@@ -130,18 +131,14 @@ if __name__ == "__main__":
     )
 
     """ DATA STORAGE """
-    with open(
-        f"data_storage/group_{objects[0][12]}/parameters.csv", "w"
-        ) as csvfile:
+    with open(f"data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(
             ["group", "epoch", "endtime", "timestep", "probabilty", "precentage"]
         )
         write.writerows(parameters)
 
-    with open(
-        f"data_storage/group_{objects[0][12]}/collisions.csv", "w"
-    ) as csvfile:
+    with open(f"data_storage/group_{objects[0][12]}/collisions.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["object1", "object2", "time"])
         write.writerows(collisions)

@@ -1,5 +1,5 @@
 import numpy as np
-from numba import jit, njit
+from numba import jit
 
 from scipy.spatial.transform import Rotation
 
@@ -77,7 +77,7 @@ def random_debris(
         new_debris = np.array(
             [[time, mean_anomaly, semimajor_axis, 1, pos[0], pos[1], pos[2]]]
         )
-        
+
         objects = np.append(objects, new_debris, axis=0)
     return objects, matrices, int(n_new_debris)
 
@@ -190,12 +190,12 @@ def check_collisions(objects: np.ndarray, margin: float):
     returns a generator of tuples of the two candidate colliding objects.
     """
     for i in range(len(objects) - 1):
-        for j in range(i+1, len(objects) - 1):
-            if objects[i][3]!=0 and objects[j][3]!=0:
+        for j in range(i + 1, len(objects) - 1):
+            if objects[i][3] != 0 and objects[j][3] != 0:
                 pos1 = np.array([objects[i][4], objects[i][5], objects[i][6]])
                 pos2 = np.array([objects[j][4], objects[j][5], objects[j][6]])
                 if np.linalg.norm(pos1 - pos2) < margin:
-                    #print("boom")
+                    # print("boom")
                     return objects[i], objects[j]
 
 
@@ -218,12 +218,20 @@ def collision(object1: np.ndarray, object2: np.ndarray):
     g = np.random.rand()
     new_semi_major_axis = object1[2] + ((g * 200) - 100)
 
-    new_mean_anomaly = object1[1]+180
+    new_mean_anomaly = object1[1] + 180
     if new_mean_anomaly > 360:
         new_mean_anomaly -= 360
 
     new_debris.append(
-        [object1[0], new_mean_anomaly, new_semi_major_axis, 1, -object1[4], -object1[5], -object1[6]]
+        [
+            object1[0],
+            new_mean_anomaly,
+            new_semi_major_axis,
+            1,
+            -object1[4],
+            -object1[5],
+            -object1[6],
+        ]
     )
 
     return new_debris
