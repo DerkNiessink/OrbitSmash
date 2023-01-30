@@ -5,7 +5,7 @@ import csv
 
 from model import *
 
-# from graphics import View
+from graphics import View
 from data_cleaning import data_array, data_array_debris, all_groups
 
 
@@ -23,11 +23,11 @@ def run_sim(
     objects: np.ndarray,
     debris: np.ndarray,
     group: int,
+    draw: bool,
     margin: int,
     endtime: float,
     timestep: float,
     epoch: float,
-    draw: bool,
     probability: float,
     percentage: float,
     frequency_new_debris: int,
@@ -37,10 +37,11 @@ def run_sim(
     for collisions and handling the collisions.
     """
 
-    # if draw:
-    #     view = View(objects)
+    if draw:
+        view = View(objects)
 
     initialize_positions(objects, epoch)
+    initialize_positions(debris, epoch)
 
     objects_fast = fast_arr(objects)
     debris_fast = fast_arr(debris)
@@ -99,7 +100,6 @@ def run_sim(
 if __name__ == "__main__":
 
     """GROUP SELECTION"""
-
     if len(sys.argv) > 1 and int(sys.argv[1]) in all_groups:
         group = int(sys.argv[1])
 
@@ -117,20 +117,20 @@ if __name__ == "__main__":
     debris = data_array_debris_group
 
     """ VISUALISATION"""
-    view = False
+    draw = False
 
-    if len(sys.argv) > 3 and sys.argv[2] == "view":
-        view = True
+    if len(sys.argv) > 2 and sys.argv[2] == "view":
+        draw = True
 
     parameters, collisions, debris = run_sim(
         objects,
         debris,
         group,
-        margin=1_400_000,
-        endtime=315569260,
+        draw,
+        margin=0,
+        endtime=315569260/100,
         timestep=100,
         epoch=1675209600.0,
-        draw=False,
         probability=1,
         percentage=0,
         frequency_new_debris=31556926,

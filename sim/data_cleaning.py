@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation
 import os
 
 
-dataset = pd.read_csv("../data/satellites.csv")
+dataset = pd.read_csv("data/satellites.csv")
 
 # removing irrelevant columns
 dataset = dataset.drop(
@@ -101,8 +101,8 @@ bins_sub = np.digitize(np.array(subgroups["SEMIMAJOR_AXIS"]), linspace_sub, righ
 subgroups_ = subgroups.copy()
 subgroups_["groups"] = bins_sub
 
-
-dataset = subgroups_.loc[subgroups_["groups"] != 19]
+dataset = subgroups_
+#dataset = subgroups_.loc[subgroups_["groups"] != 19]
 # linspace_21 = np.linspace(
 #     min(group_21["SEMIMAJOR_AXIS"]), max(group_21["SEMIMAJOR_AXIS"]), num=20
 # )

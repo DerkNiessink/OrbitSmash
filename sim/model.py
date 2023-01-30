@@ -22,7 +22,7 @@ from scipy.spatial.transform import Rotation
 
     collisions = {'objects': [object1, object2], 'timestep': float}
     new_debris = {'timestep': float, 'number of new debris': 'int'}
-    parameters = ['group', 'epoch', 'endtime', 'timestep', 'probabilty', 'precentage']
+    parameters = ['group', 'epoch', 'endtime', 'timestep', 'probabilty', 'percentage']
     etc. 
     """
 
@@ -195,14 +195,12 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin: float):
     returns a generator of tuples of the two candidate colliding objects.
     """
     for i in range(len(objects) - 1):
-        for j in range(len(debris)):
-            if debris[j][1] != objects[i][1]:
-
-                pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
-                pos2 = np.array([debris[j][3], debris[j][4], debris[j][5]])
-
-                if np.linalg.norm(pos1 - pos2) < margin:
-                    return objects[i], debris[j]
+        for j in range(i, len(objects) - 1):
+            pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
+            pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
+            if np.linalg.norm(pos1 - pos2) < margin:
+                print("boom")
+                return objects[i], objects[j]
 
 
 @jit(nopython=True)
