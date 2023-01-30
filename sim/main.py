@@ -121,7 +121,7 @@ if __name__ == "__main__":
         group,
         draw,
         margin=100,
-        endtime=315569260/100,
+        endtime=315569260/10,
         timestep=100,
         epoch=1675209600.0,
         probability=1,

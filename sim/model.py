@@ -204,7 +204,7 @@ def check_collisions(objects: np.ndarray, margin: float):
 
 
 @jit(nopython=True)
-def collision(object_involved1: np.ndarray, object_involved2: np.ndarray):
+def collision(object1: np.ndarray, object2: np.ndarray):
     """
     Add two new objects at the positions of the two objects involved in a
     collision with a slightly adjusted inclination.
@@ -217,14 +217,17 @@ def collision(object_involved1: np.ndarray, object_involved2: np.ndarray):
     """
     new_debris = list()
     # Create new debris
-    for object in [object_involved1, object_involved2]:
 
-        # calculate new inclination
-        g = np.random.rand()
-        new_semi_major_axis = object[2] + ((g * 200) - 100)
+    # calculate new inclination
+    g = np.random.rand()
+    new_semi_major_axis = object1[2] + ((g * 200) - 100)
 
-        new_debris.append(
-            [object[0], object[1], new_semi_major_axis, 1, -object[4], -object[5], -object[6]]
-        )
+    new_mean_anomaly = object1[1]+180
+    if new_mean_anomaly > 360:
+        new_mean_anomaly -= 360
+
+    new_debris.append(
+        [(object1[0]+object2[0])/2, new_mean_anomaly, new_semi_major_axis, 1, -object1[4], -object1[5], -object1[6]]
+    )
 
     return new_debris
