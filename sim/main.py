@@ -6,7 +6,7 @@ import csv
 from model import *
 
 # from graphics import View
-from data_cleaning import data_array, data_array_debris, all_groups
+from data_cleaning import data_array, all_groups
 
 
 def fast_arr(objects: np.ndarray):
@@ -41,6 +41,7 @@ def run_sim(
     #     view = View(objects)
 
     initialize_positions(objects, epoch)
+    print(objects)
 
     objects_fast = fast_arr(objects)
     debris_fast = fast_arr(debris)
@@ -59,7 +60,7 @@ def run_sim(
 
         collided_objects = check_collisions(objects_fast, debris_fast, margin)
         if collided_objects != None:
-            print('Collision!')
+            print("Collision!")
             object1, object2 = collided_objects[0], collided_objects[1]
 
             # Compute new debris
@@ -137,14 +138,18 @@ if __name__ == "__main__":
     )
 
     """ DATA STORAGE """
-    with open(f"sim/data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
+    with open(
+        f"sim/data_storage/group_{objects[0][12]}/parameters.csv", "w"
+    ) as csvfile:
         write = csv.writer(csvfile)
         write.writerow(
             ["group", "epoch", "endtime", "timestep", "probabilty", "precentage"]
         )
         write.writerows(parameters)
 
-    with open(f"sim/data_storage/group_{objects[0][12]}/collisions.csv", "w") as csvfile:
+    with open(
+        f"sim/data_storage/group_{objects[0][12]}/collisions.csv", "w"
+    ) as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["object1", "object2", "time"])
         write.writerows(collisions)
