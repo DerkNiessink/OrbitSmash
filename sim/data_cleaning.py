@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation
 import os
 
 
-dataset = pd.read_csv("data/satellites.csv")
+dataset = pd.read_csv("../data/satellites.csv")
 
 # removing irrelevant columns
 dataset = dataset.drop(
