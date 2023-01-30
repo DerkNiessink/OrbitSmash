@@ -57,7 +57,7 @@ def run_sim(
 
         collided_objects = check_collisions(objects_fast, margin)
         if collided_objects != None:
-            
+            print("Collision!")
             object1, object2 = collided_objects[0], collided_objects[1]
 
             # Compute new debris
@@ -130,14 +130,18 @@ if __name__ == "__main__":
     )
 
     """ DATA STORAGE """
-    with open(f"sim/data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
+    with open(
+        f"sim/data_storage/group_{objects[0][12]}/parameters.csv", "w"
+    ) as csvfile:
         write = csv.writer(csvfile)
         write.writerow(
             ["group", "epoch", "endtime", "timestep", "probabilty", "precentage"]
         )
         write.writerows(parameters)
 
-    with open(f"sim/data_storage/group_{objects[0][12]}/collisions.csv", "w") as csvfile:
+    with open(
+        f"sim/data_storage/group_{objects[0][12]}/collisions.csv", "w"
+    ) as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["object1", "object2", "time"])
         write.writerows(collisions)
