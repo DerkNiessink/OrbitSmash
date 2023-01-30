@@ -191,9 +191,13 @@ def check_collisions(objects: np.ndarray, margin: float):
     """
     for i in range(len(objects) - 1):
         for j in range(i + 1, len(objects) - 1):
-            if objects[i][3] != 0 or objects[j][3] != 0:
+            if (
+                objects[i][3] != 0 or objects[j][3] != 0
+            ):  # Satellites cannot collide with other satellites
+
                 pos1 = np.array([objects[i][4], objects[i][5], objects[i][6]])
                 pos2 = np.array([objects[j][4], objects[j][5], objects[j][6]])
+
                 if np.linalg.norm(pos1 - pos2) < margin:
                     return objects[i], objects[j]
 
