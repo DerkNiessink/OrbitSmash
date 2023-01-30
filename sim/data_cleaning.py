@@ -102,6 +102,7 @@ subgroups_ = subgroups.copy()
 subgroups_["groups"] = bins_sub
 
 dataset = subgroups_
+dataset = subgroups_.loc[subgroups_['groups'] != 19]
 
 small_group = dataset.groupby("groups")["groups"].count() != 1
 delete = list(small_group.loc[small_group == False].index)
@@ -122,6 +123,7 @@ delete.extend(no_debris)
 dataset = dataset[~dataset["groups"].isin(delete)]
 group_amount = dataset.groupby("groups")["groups"].count()
 
+#print(group_amount.to_string())
 all_groups = []
 for i in group_amount.index:
     all_groups.append(i)
