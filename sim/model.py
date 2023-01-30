@@ -154,11 +154,7 @@ def calc_all_positions(
 
     objects: array of objects to be evaluated. An objects has to be in the
     following form:
-<<<<<<< HEAD
-     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE', 'pos_x', pos_y', 'pos_z']
-=======
-     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'object_bool', 'pos_x', pos_y', 'pos_z']
->>>>>>> 3fd246cae6dbcd745bbaf300adaf8b3d6d3bbd43
+     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS', 'pos_x', pos_y', 'pos_z']
     marices: array of rotation matrices of the objects computed from the 3
     orbital angles.
     time: time at which the positions will be calculated.
@@ -227,7 +223,7 @@ def collision(object1: np.ndarray, object2: np.ndarray):
         new_mean_anomaly -= 360
 
     new_debris.append(
-        [(object1[0]+object2[0])/2, new_mean_anomaly, new_semi_major_axis, 1, -object1[4], -object1[5], -object1[6]]
+        [object1[0], new_mean_anomaly, new_semi_major_axis, 1, -object1[4], -object1[5], -object1[6]]
     )
 
     return new_debris
