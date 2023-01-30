@@ -5,7 +5,7 @@ import csv
 
 from model import *
 
-from graphics import View
+# from graphics import View
 from data_cleaning import data_array, all_groups
 
 
@@ -36,8 +36,8 @@ def run_sim(
     for collisions and handling the collisions.
     """
 
-    if draw:
-        view = View(objects)
+    # if draw:
+    #     view = View(objects)
 
     initialize_positions(objects, epoch)
 
@@ -57,7 +57,6 @@ def run_sim(
 
         collided_objects = check_collisions(objects_fast, margin)
         if collided_objects != None:
-            print("Collision!")
 
             #object1, object2 = collided_objects[0], collided_objects[1]
             object1, object2 = check_collisions(objects_fast, margin)
@@ -114,18 +113,18 @@ if __name__ == "__main__":
     """ VISUALISATION"""
     draw = False
 
-    if len(sys.argv) > 2 and sys.argv[2] == "view":
-        draw = True
+    # if len(sys.argv) > 2 and sys.argv[2] == "view":
+    #     draw = True
 
     parameters, collisions, added_debris = run_sim(
         objects,
         group,
         draw,
-        margin= 1500,
-        endtime=315569260/100,
+        margin= 1400,
+        endtime=315569260,
         timestep=100,
         epoch=1675209600.0,
-        probability=1,
+        probability=0,
         percentage=0,
         frequency_new_debris=315569260,
     )
