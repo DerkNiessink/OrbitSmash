@@ -102,16 +102,6 @@ subgroups_ = subgroups.copy()
 subgroups_["groups"] = bins_sub
 
 dataset = subgroups_
-# dataset = subgroups_.loc[subgroups_["groups"] != 19]
-# linspace_21 = np.linspace(
-#     min(group_21["SEMIMAJOR_AXIS"]), max(group_21["SEMIMAJOR_AXIS"]), num=20
-# )
-# bins21 = (np.digitize(np.array(group_21["SEMIMAJOR_AXIS"]), linspace_21, right=False) * 0.05) + 21
-# group_21['groups'] = bins21
-# print(group_21.groupby("groups")["groups"].count())
-# dataset = dataset.loc[dataset['groups'] != 21]
-# dataset = dataset.append(group_21, ignore_index=True)
-
 
 small_group = dataset.groupby("groups")["groups"].count() != 1
 delete = list(small_group.loc[small_group == False].index)
