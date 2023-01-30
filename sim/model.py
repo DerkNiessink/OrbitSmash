@@ -12,7 +12,7 @@ from scipy.spatial.transform import Rotation
        'RCS_SIZE' (8), 'LAUNCH_DATE' (9), 'positions' (10), 'rotation_matrix' (11), 'groups' (12)]
 
 "objects_fast" =
-['EPOCH' (0), 'MEAN_ANOMALY' (1), 'SEMIMAJOR_AXIS' (2), 'pos_x' (3), pos_y' (4), 'pos_z' (5)]
+['EPOCH' (0), 'MEAN_ANOMALY' (1), 'SEMIMAJOR_AXIS' (2), 'SATTELITE/DEBRIS'(3), 'pos_x' (4), pos_y' (5), 'pos_z' (6)]
 
 """
 
@@ -49,7 +49,6 @@ def initialize_positions(objects: np.ndarray, epoch: float):
 
 def random_debris(
     objects: np.ndarray,
-    debris: np.ndarray,
     matrices: np.ndarray,
     time: float,
     percentage: float,
@@ -83,8 +82,8 @@ def random_debris(
             new_debris,
             axis=0,
         )
-        debris = np.append(debris, new_debris, axis=0)
-    return objects, debris, matrices, int(n_new_debris)
+        objects = np.append(objects, new_debris, axis=0)
+    return objects, matrices, int(n_new_debris)
 
 
 def random_params(objects) -> tuple:
@@ -181,7 +180,7 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, debris: np.ndarray, margin: float):
+def check_collisions(objects: np.ndarray, margin: float):
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
@@ -195,12 +194,13 @@ def check_collisions(objects: np.ndarray, debris: np.ndarray, margin: float):
     returns a generator of tuples of the two candidate colliding objects.
     """
     for i in range(len(objects) - 1):
-        for j in range(i, len(objects) - 1):
-            pos1 = np.array([objects[i][3], objects[i][4], objects[i][5]])
-            pos2 = np.array([objects[j][3], objects[j][4], objects[j][5]])
-            if np.linalg.norm(pos1 - pos2) < margin:
-                print("boom")
-                return objects[i], objects[j]
+        for j in range(i+1, len(objects) - 1):
+            if objects[i][3]!=0 and objects[j][3]!=0:
+                pos1 = np.array([objects[i][4], objects[i][5], objects[i][6]])
+                pos2 = np.array([objects[j][4], objects[j][5], objects[j][6]])
+                if np.linalg.norm(pos1 - pos2) < margin:
+                    print("boom")
+                    return objects[i], objects[j]
 
 
 @jit(nopython=True)
@@ -211,7 +211,7 @@ def collision(object_involved1: np.ndarray, object_involved2: np.ndarray):
 
     object_involved: np.array of the object to be evaluated and has to be in the
     following form:
-     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
+     -> ['EPOCH' (0), 'MEAN_ANOMALY' (1), 'SEMIMAJOR_AXIS' (2), 'SATTELITE/DEBRIS'(3), 'pos_x' (4), pos_y' (5), 'pos_z' (6)]
 
     Returns a copy of the objects with the 2 new objects appended.
     """
@@ -221,14 +221,10 @@ def collision(object_involved1: np.ndarray, object_involved2: np.ndarray):
 
         # calculate new inclination
         g = np.random.rand()
-        new_inclination = object[5] + ((g * 6) - 3)
-        if new_inclination > 180:
-            new_inclination -= 180
-        if new_inclination < 0:
-            new_inclination += 180
+        new_semi_major_axis = object[2] + ((g * 200) - 100)
 
         new_debris.append(
-            [object[0], object[1], -object[2], -object[3], -object[4], new_inclination]
+            [object[0], object[1], new_semi_major_axis, 1, -object[4], -object[5], -object[6]]
         )
 
     return new_debris

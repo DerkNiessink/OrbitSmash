@@ -144,6 +144,8 @@ for i in group_amount.index:
 
 
 """ dataset verdelen in sateliet en niet-sateliet"""
+dataset=dataset.copy()
+
 lijst = []
 for i,j in dataset["OBJECT_TYPE"].items():
     if j == 'PAYLOAD':

@@ -6,7 +6,7 @@ import csv
 from model import *
 
 from graphics import View
-from data_cleaning import data_array, data_array_debris, all_groups
+from data_cleaning import data_array, all_groups
 
 
 def fast_arr(objects: np.ndarray):
@@ -14,14 +14,13 @@ def fast_arr(objects: np.ndarray):
     Prepare fast array for usage with Numba.
 
     Returns array of the form:
-      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
+      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS  'pos_x', pos_y', 'pos_z']
     """
-    return np.array([[object[0], object[4], object[6], 0, 0, 0] for object in objects])
+    return np.array([[object[0], object[4], object[6], object[13], 0, 0, 0] for object in objects])
 
 
 def run_sim(
     objects: np.ndarray,
-    debris: np.ndarray,
     group: int,
     draw: bool,
     margin: int,
@@ -41,10 +40,8 @@ def run_sim(
         view = View(objects)
 
     initialize_positions(objects, epoch)
-    initialize_positions(debris, epoch)
 
     objects_fast = fast_arr(objects)
-    debris_fast = fast_arr(debris)
     matrices = np.array([object[11] for object in objects])
 
     parameters = []
@@ -58,17 +55,17 @@ def run_sim(
     ):
         calc_all_positions(objects_fast, matrices, time)
 
-        collided_objects = check_collisions(objects_fast, debris_fast, margin)
+        collided_objects = check_collisions(objects_fast, margin)
         if collided_objects != None:
-            print('Collision!')
+            
             object1, object2 = collided_objects[0], collided_objects[1]
 
             # Compute new debris
             new_debris = collision(object1, object2)
+            
 
             # Add new debris to the total objects an debris arrays
             objects_fast = np.concatenate((objects_fast, new_debris), axis=0)
-            debris_fast = np.concatenate((debris_fast, new_debris), axis=0)
 
             # Save the collision data
             collisions.append([object1, object2, time])
@@ -77,8 +74,8 @@ def run_sim(
             frequency_new_debris != None
             and (time - epoch) % (frequency_new_debris * timestep) == 0
         ):
-            objects_fast, debris_fast, matrices, new_debris = random_debris(
-                objects_fast, debris_fast, matrices, time, percentage
+            objects_fast, matrices, new_debris = random_debris(
+                objects_fast, matrices, time, percentage
             )
 
             added_debris.append([new_debris, time])
@@ -108,13 +105,10 @@ if __name__ == "__main__":
         sys.exit()
 
     group_selection = data_array[:, 12] == group
-    group_selection_debris = data_array_debris[:, 12] == group
 
     data_array_group = data_array[group_selection]
-    data_array_debris_group = data_array_debris[group_selection_debris]
 
     objects = data_array_group
-    debris = data_array_debris_group
 
     """ VISUALISATION"""
     draw = False
@@ -122,12 +116,11 @@ if __name__ == "__main__":
     if len(sys.argv) > 2 and sys.argv[2] == "view":
         draw = True
 
-    parameters, collisions, debris = run_sim(
+    parameters, collisions, added_debris = run_sim(
         objects,
-        debris,
         group,
         draw,
-        margin=0,
+        margin=100,
         endtime=315569260/100,
         timestep=100,
         epoch=1675209600.0,
@@ -152,6 +145,5 @@ if __name__ == "__main__":
     with open(f"sim/data_storage/group_{objects[0][12]}/debris.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["number_debris", "time"])
-        write.writerows(debris)
 
     print(f"\ngroup {group} done running")
