@@ -104,7 +104,7 @@ if __name__ == "__main__":
         group = int(sys.argv[1])
 
     else:
-        print("Give a valid number of the orbit you want to evaluate")
+        print("\nGive a valid number of the orbit you want to evaluate")
         sys.exit()
 
     group_selection = data_array[:, 12] == group
