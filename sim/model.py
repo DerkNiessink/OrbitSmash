@@ -75,13 +75,9 @@ def random_debris(
         matrices = np.append(matrices, matrix, axis=0)
         pos = new_position(time, time + 1, mean_anomaly, semimajor_axis, matrices[-1])
         new_debris = np.array(
-            [[time, mean_anomaly, semimajor_axis, pos[0], pos[1], pos[2]]]
+            [[time, mean_anomaly, semimajor_axis, 1, pos[0], pos[1], pos[2]]]
         )
-        objects = np.append(
-            objects,
-            new_debris,
-            axis=0,
-        )
+        
         objects = np.append(objects, new_debris, axis=0)
     return objects, matrices, int(n_new_debris)
 
@@ -199,7 +195,7 @@ def check_collisions(objects: np.ndarray, margin: float):
                 pos1 = np.array([objects[i][4], objects[i][5], objects[i][6]])
                 pos2 = np.array([objects[j][4], objects[j][5], objects[j][6]])
                 if np.linalg.norm(pos1 - pos2) < margin:
-                    print("boom")
+                    #print("boom")
                     return objects[i], objects[j]
 
 
