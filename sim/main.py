@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from tqdm import tqdm
 import csv
+import random
 
 from model import *
 
@@ -57,19 +58,21 @@ def run_sim(
     ):
         calc_all_positions(objects_fast, matrices, time)
 
-        if len(objects_fast) > 500:
+        if len(objects_fast) > 1000:
             print(f"\nGroup {group} process killed.")
             sys.exit()
 
         collided_objects = check_collisions(objects_fast, margin)
         if collided_objects != None:
-            object1, object2 = collided_objects[0], collided_objects[1]
 
+            object1, object2 = collided_objects[0], collided_objects[1]
             # Compute new debris
             new_debris = collision(object1, object2)
 
-            # Add new debris to the total objects an debris arrays
+            # Add new debris to the total objects and debris arrays
             objects_fast = np.concatenate((objects_fast, new_debris), axis=0)
+            new_matrix = matrices[random.randint(0, len(matrices) - 1)]
+            matrices = np.concatenate((matrices, [new_matrix]), axis=0)
 
             # Save the collision data
             collisions.append([object1, object2, time])
@@ -123,7 +126,7 @@ if __name__ == "__main__":
         objects,
         group,
         draw,
-        margin=100,
+        margin=700,
         endtime=315569260,
         timestep=100,
         epoch=1675209600.0,
