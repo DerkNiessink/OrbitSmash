@@ -126,7 +126,7 @@ if __name__ == "__main__":
         objects,
         group,
         draw,
-        margin=700,
+        margin=100,
         endtime=315569260,
         timestep=100,
         epoch=1675209600.0,
