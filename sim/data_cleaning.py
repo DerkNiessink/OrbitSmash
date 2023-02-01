@@ -15,7 +15,7 @@ import datetime
 from scipy.spatial.transform import Rotation
 
 
-dataset = pd.read_csv("../data/satellites.csv")
+dataset = pd.read_csv("data/satellites.csv")
 
 # removing irrelevant columns
 dataset = dataset.drop(
