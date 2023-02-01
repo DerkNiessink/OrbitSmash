@@ -18,7 +18,7 @@ import csv
 import random
 
 from model import *
-from graphics import View
+from view import View
 from data_cleaning import data_array, all_groups
 
 
