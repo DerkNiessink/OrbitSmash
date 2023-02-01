@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation
 import os
 
 
-dataset = pd.read_csv("../data/satellites.csv")
+dataset = pd.read_csv("data/satellites.csv")
 
 # removing irrelevant columns
 dataset = dataset.drop(
@@ -128,6 +128,9 @@ for i in group_amount.index:
     all_groups.append(i)
     if not os.path.exists(f"data_storage/group_{i}"):
         os.makedirs(f"data_storage/group_{i}", exist_ok=True)
+
+re = 6371 * 10**3
+mean_semi_group = ((round((dataset[[ "groups", "SEMIMAJOR_AXIS"]].groupby('groups').mean() - re) / 1000))).to_dict()
 
 # Add 0 for satellite and 1 for debris.
 dataset = dataset.copy()
