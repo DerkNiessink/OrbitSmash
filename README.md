@@ -11,8 +11,11 @@ the objects, because objects that do not have a similar semi-major axis will
 never collide.
 
 Our goal was to simulate future space collisions. For this simulation we needed 
-to run the simulation for 10 years and for all groups. This took multiple hours, 
-that is why we provided an animation that can be reproduced with the steps below.
+to run the simulation for 10 years and for all groups. This took multiple hours
+and we ran the simulation in parallel on the UvA supercomputer. With the data
+generated in these runs we plotted the graph in our scientific poster. It takes
+too long to reproduce this graph, that is why we provided an animation that can
+be reproduced following the steps below.
 
 ### Running the simulation
 
