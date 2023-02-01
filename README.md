@@ -17,7 +17,7 @@ generated in these runs we plotted the graph in our scientific poster. It takes
 too long to reproduce this graph, that is why we provided an animation that can
 be reproduced when following the steps below.
 
-### The simulation that is produced when running the code with group 19
+### Group 19 simulation
 
 
 ### Running the simulation
