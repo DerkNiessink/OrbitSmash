@@ -10,10 +10,15 @@ divided the data in groups. The groups are determined by the semi-major axes of
 the objects, because objects that do not have a similar semi-major axis will
 never collide.
 
+Our goal was to simulate future space collisions. For this simulation we needed 
+to run the simulation for 10 years and for all groups. This took multiple hours, 
+that is why we provided an animation that can be reproduced with the steps below.
+
 ### Running the simulation
 
 * Navigate to `sim` directory -> `cd sim`
 * Create a virtual environment -> `python3 -m venv venv`
+* Activate the virtual environment -> `source venv/bin/activate`
 * Download the required packages -> `pip install -r requirements.txt`
 * Run the sim with a desired group number -> `python main.py [Group number] [view]`
 
