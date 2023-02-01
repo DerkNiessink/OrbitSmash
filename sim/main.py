@@ -86,11 +86,11 @@ def run_sim(
             )
             added_debris.append([new_debris, time])
 
-            if draw:
-                view.make_new_drawables(objects_fast)
+        #     if draw:
+        #         view.make_new_drawables(objects_fast)
 
-        if draw:
-            view.draw(objects_fast, time - epoch)
+        # if draw:
+        #     view.draw(objects_fast, time - epoch)
 
     """ DATA """
     parameters.append(
