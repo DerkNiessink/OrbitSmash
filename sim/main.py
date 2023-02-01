@@ -87,7 +87,7 @@ def run_sim(
     ):
         calc_all_positions(objects_fast, matrices, time)
 
-        if len(objects_fast) > 1000:
+        if len(objects_fast) > 2000:
             print(f"\nGroup {group} process killed.")
             sys.exit()
 

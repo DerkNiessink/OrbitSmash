@@ -10,18 +10,28 @@ divided the data in groups. The groups are determined by the semi-major axes of
 the objects, because objects that do not have a similar semi-major axis will
 never collide.
 
+Our goal was to simulate future space collisions. For this simulation we needed 
+to run the simulation for 10 years and for all groups. This took multiple hours
+and we ran the simulation in parallel on the UvA supercomputer. With the data
+generated in these runs we plotted the graph in our scientific poster. It takes
+too long to reproduce this graph, that is why we provided an animation that can
+be reproduced following the steps below.
+
 ### Running the simulation
 
 * Navigate to `sim` directory -> `cd sim`
 * Create a virtual environment -> `python3 -m venv venv`
+* Activate the virtual environment -> `source venv/bin/activate`
 * Download the required packages -> `pip install -r requirements.txt`
 * Run the sim with a desired group number -> `python main.py [Group number] [view]`
 
 An animation can be shown in the browser when adding the second argument "view".
 
-So for example running group 5 with the the animation -> `python main.py 5 view`
+So for example running group 19 with the the animation -> `python main.py 19 view`
 
-And without the animation                             -> `python main.py 5`
+And without the animation                             -> `python main.py 19`
+
+* In the animation: red spheres indicate debris and white satellites.
 
 ### After the simulation
 
