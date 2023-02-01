@@ -11,11 +11,14 @@ the objects, because objects that do not have a similar semi-major axis will
 never collide.
 
 Our goal was to simulate future space collisions. For this simulation we needed 
-to run the simulation for 10 years and for all groups. This took multiple hours
+to run the simulated time of 10 years and for all groups. This took multiple hours
 and we ran the simulation in parallel on the UvA supercomputer. With the data
 generated in these runs we plotted the graph in our scientific poster. It takes
 too long to reproduce this graph, that is why we provided an animation that can
-be reproduced following the steps below.
+be reproduced when following the steps below.
+
+### Group 19 simulation
+
 
 ### Running the simulation
 
@@ -38,7 +41,7 @@ And without the animation                             -> `python main.py 19`
 * Data will be saved in `sim_data` in the corresponding group number folder.
 * A ZeroDivisionError will be printed in the terminal. There is nothing to do
 about this and is caused by the fact that vpython (the animation library) has not
-updated since the new version release of Python.
+updated since the newest version of Python was released.
 
 ### For developers
 
