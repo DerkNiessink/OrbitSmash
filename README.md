@@ -30,9 +30,9 @@ be reproduced when following the steps below.
 * Download the required packages -> `pip install -r requirements.txt`
 * Run the sim with a desired group number -> `python main.py [Group number] [view]`
 
-An animation can be shown in the browser when adding the second argument "view".__
-So for example running group 19 with the the animation -> `python main.py 19 view`__
-And without the animation                             -> `python main.py 19`__
+An animation can be shown in the browser when adding the second argument "view".
+So for example running group 19 with the the animation -> `python main.py 19 view`.
+And without the animation                             -> `python main.py 19`.
 
 In the animation:
 * Red spheres indicate debris and white satellites.
