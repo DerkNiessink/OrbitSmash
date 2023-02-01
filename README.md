@@ -22,6 +22,7 @@ be reproduced when following the steps below.
 
 ### Running the simulation
 
+* Clone the repository
 * Navigate to `sim` directory -> `cd sim`
 * Create a virtual environment -> `python3 -m venv venv`
 * Activate the virtual environment -> `source venv/bin/activate`
