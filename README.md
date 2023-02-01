@@ -18,6 +18,7 @@ too long to reproduce this graph, that is why we provided an animation that can
 be reproduced when following the steps below.
 
 ### Group 19 simulation
+![](https://github.com/JennaVries/Project-Minor-Computational-Science/blob/submit_version/earth.gif)
 
 
 ### Running the simulation
