@@ -19,9 +19,11 @@ never collide.
 
 An animation can be shown in the browser when adding the second argument "view".
 
-So for example running group 5 with the the animation -> `python main.py 5 view`
+So for example running group 19 with the the animation -> `python main.py 19 view`
 
-And without the animation                             -> `python main.py 5`
+And without the animation                             -> `python main.py 19`
+
+* Red sphere indicate debris and white satellites.
 
 ### After the simulation
 

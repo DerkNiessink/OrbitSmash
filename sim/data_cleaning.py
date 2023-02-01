@@ -55,6 +55,8 @@ dataset = dataset.drop(
 
 
 def epoch(df_column):
+    """Converting datetime to epoch"""
+
     date_list = list(df_column)
     new_date_list = []
 
@@ -69,11 +71,10 @@ def epoch(df_column):
                 int(year), int(month), int(day), int(hour), int(minute), int(second)
             ).timestamp()
         )
-
     return new_date_list
 
 
-# only selecting data in LEO
+""" Only selecting data in LEO """
 dataset = dataset.sort_values("SEMIMAJOR_AXIS")
 dataset = dataset[dataset["SEMIMAJOR_AXIS"] < 8371]
 dataset["MEAN_ANOMALY"] = dataset["MEAN_ANOMALY"] * np.pi / 180
@@ -83,6 +84,7 @@ dataset["SEMIMAJOR_AXIS"] = dataset["SEMIMAJOR_AXIS"].apply(
     lambda x: x * 1000
 )  # Convert to meters
 
+""" Creating the rotation matrices for all objects"""
 matrices = []
 for index, row in dataset.iterrows():
     R = Rotation.from_euler(
@@ -102,7 +104,6 @@ linspace = np.linspace(
 bins = np.digitize(np.array(dataset["SEMIMAJOR_AXIS"]), linspace, right=False)
 dataset["groups"] = bins
 
-
 subgroups = dataset.loc[dataset["groups"].isin([i for i in range(17, 42)])]
 linspace_sub = np.linspace(
     min(subgroups["SEMIMAJOR_AXIS"]), max(subgroups["SEMIMAJOR_AXIS"]), num=100
@@ -112,34 +113,32 @@ subgroups_ = subgroups.copy()
 subgroups_["groups"] = bins_sub
 
 dataset = subgroups_
-dataset = subgroups_.loc[subgroups_["groups"] != 19]
+# dataset = subgroups_.loc[subgroups_["groups"] != 19] ## ignore this comment
 
 small_group = dataset.groupby("groups")["groups"].count() != 1
 delete = list(small_group.loc[small_group == False].index)
 
-# the groups that have no debris
+""" Deleting the groups that have no debris """
 grouped = dataset.groupby("groups")
 debris_groups = grouped.filter(
     lambda x: all(x["OBJECT_TYPE"].isin(["TBA", "ROCKET BODY", "PAYLOAD"]))
 )
-
 no_debris = []
 for i in set(debris_groups["groups"]):
     no_debris.append(i)
-
 delete.extend(no_debris)
-
 
 dataset = dataset[~dataset["groups"].isin(delete)]
 group_amount = dataset.groupby("groups")["groups"].count()
 
+""" Making data floders of all groups """
 all_groups = []
 for i in group_amount.index:
     all_groups.append(i)
     if not os.path.exists(f"sim_data/group_{i}"):
         os.makedirs(f"sim_data/group_{i}", exist_ok=True)
 
-# Add 0 for satellite and 1 for debris.
+""" Dividing the dataset up debris and satellites """
 dataset = dataset.copy()
 bool_list = [0 if j == "PAYLOAD" else 1 for _, j in dataset["OBJECT_TYPE"].items()]
 dataset["object_bool"] = bool_list
