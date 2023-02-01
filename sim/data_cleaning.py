@@ -1,8 +1,18 @@
+"""
+"data_cleaning.py"
+
+This module deals with data_cleaning of satellite data and creates an array
+with this data for usage in the simulation.
+
+Satellite and debris data source: http://astria.tacc.utexas.edu/AstriaGraph/
+"""
+
+
 import pandas as pd
 import numpy as np
+import os
 import datetime
 from scipy.spatial.transform import Rotation
-import os
 
 
 dataset = pd.read_csv("../data/satellites.csv")
