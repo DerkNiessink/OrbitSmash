@@ -31,7 +31,7 @@ So for example running group 19 with the the animation -> `python main.py 19 vie
 
 And without the animation                             -> `python main.py 19`
 
-* Red sphere indicate debris and white satellites.
+* In the animation: red spheres indicate debris and white satellites.
 
 ### After the simulation
 
