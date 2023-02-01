@@ -101,14 +101,14 @@ for group in groups_700:
     color_list.remove(color_list[0])
 
 # add legend outside of plot
-plt.legend(handles=custom_legend, bbox_to_anchor=(1.05, 1.0), loc='upper left', title="\u03B1 in meters", fontsize=9)
+plt.legend(handles=custom_legend, bbox_to_anchor=(1.05, 1.0), loc='upper left', title="r in kilometer", fontsize=9)
 plt.tight_layout()
 
 plt.xlim(0,10)
 plt.ylim(0,130)
 plt.xticks(np.linspace(0,10,11))
 plt.subplots_adjust(top=0.90, bottom=0.3)
-plt.title("Amount of collisions with a margin of 700m", fontsize=23)
-plt.xlabel("Time in years", fontsize=20)
-plt.ylabel("Number of collisions", fontsize=20)
+plt.title("Amount of collisions with a margin of 700m", fontsize=20)
+plt.xlabel("Time in years", fontsize=18)
+plt.ylabel("Number of collisions", fontsize=18)
 plt.show()
