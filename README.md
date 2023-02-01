@@ -20,6 +20,7 @@ never collide.
 An animation can be shown in the browser when adding the second argument "view".
 
 So for example running group 5 with the the animation -> `python main.py 5 view`
+
 And without the animation                             -> `python main.py 5`
 
 ### After the simulation
