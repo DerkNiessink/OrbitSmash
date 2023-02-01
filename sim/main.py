@@ -1,3 +1,16 @@
+"""
+"main.py"
+
+Run this module to start the simulation.
+
+Usage:
+-> python main.py [orbit number (between 0 and 99)] [view (optional)]
+
+* If "view" is given, an animation will start up in the browser.
+* Data will be saved to "sim_data" the folder corresponding to the group number.
+"""
+
+
 import sys
 import numpy as np
 from tqdm import tqdm
@@ -5,8 +18,7 @@ import csv
 import random
 
 from model import *
-
-# from graphics import View
+from graphics import View
 from data_cleaning import data_array, all_groups
 
 
@@ -15,7 +27,7 @@ def fast_arr(objects: np.ndarray):
     Prepare fast array for usage with Numba.
 
     Returns array of the form:
-      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS  'pos_x', pos_y', 'pos_z']
+      -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS_BOOL'  'pos_x', pos_y', 'pos_z']
     """
     return np.array(
         [[object[0], object[4], object[6], object[13], 0, 0, 0] for object in objects]
@@ -26,35 +38,52 @@ def run_sim(
     objects: np.ndarray,
     group: int,
     draw: bool,
-    margin: int,
+    margin: float,
     endtime: float,
     timestep: float,
     epoch: float,
     probability: float,
     percentage: float,
     frequency_new_debris: int,
-):
+) -> tuple[list, list, list]:
     """
     Run the simulation by calculating the position of the objects, checking
     for collisions and handling the collisions.
+
+    objects: array of objects in the following form:
+    -> ['EPOCH', 'INCLINATION', 'RA_OF_ASC_NODE', 'ARG_OF_PERICENTER',
+       'MEAN_ANOMALY', 'NORAD_CAT_ID', 'SEMIMAJOR_AXIS', 'OBJECT_TYPE',
+       'RCS_SIZE', 'LAUNCH_DATE', 'positions', 'rotation_matrix', 'groups'].
+    group: number of the orbit group.
+    draw: if true an animation will be started in the browser.
+    margin: threshold of when two objects are colliding.
+    endtime: end time of the simulation in seconds.
+    timestep: size of the time steps in seconds.
+    epoch: Julian date in seconds of the start of the simulation.
+    probability: The probablity of adding new debris per call of the function
+    "random_debris".
+    percentage: percentage of the number of existing debris to add every call
+    of "random_debris".
+    frequency_new_debris: frequency of calling the function "random_debris".
+    If this value is 100 and the timestep is 100, "random_debris" will be called
+    every 100x100 seconds.
+
+    Returns a tuple of the simulation parameters, new debris and collision data.
     """
 
-    # if draw:
-    #     view = View(objects)
+    if draw:
+        view = View(objects)
 
     initialize_positions(objects, epoch)
-
     objects_fast = fast_arr(objects)
     matrices = np.array([object[11] for object in objects])
 
-    parameters = []
-    collisions = []
-    added_debris = []
+    parameters, collisions, added_debris = [], [], []
 
     for time in tqdm(
         range(int(epoch), int(epoch + endtime), timestep),
         ncols=100,
-        desc=f"group: {group}",
+        desc=f"group: {group}",  # tqdm for the progress bar.
     ):
         calc_all_positions(objects_fast, matrices, time)
 
@@ -69,7 +98,8 @@ def run_sim(
             # Compute new debris
             new_debris = collision(object1, object2)
 
-            # Add new debris to the total objects and debris arrays
+            # Add new debris to the total objects array and a random matrix to
+            # the matrices array.
             objects_fast = np.concatenate((objects_fast, new_debris), axis=0)
             new_matrix = matrices[random.randint(0, len(matrices) - 1)]
             matrices = np.concatenate((matrices, [new_matrix]), axis=0)
@@ -80,19 +110,18 @@ def run_sim(
         if (
             frequency_new_debris != None
             and (time - epoch) % (frequency_new_debris * timestep) == 0
-        ):
+        ):  # Add new debris at timesteps indicated by frequency_new_debris.
             objects_fast, matrices, new_debris = random_debris(
                 objects_fast, matrices, time, percentage
             )
             added_debris.append([new_debris, time])
 
-        #     if draw:
-        #         view.make_new_drawables(objects_fast)
+            if draw:
+                view.make_new_drawables(objects_fast)
 
-        # if draw:
-        #     view.draw(objects_fast, time - epoch)
+        if draw:
+            view.draw(objects_fast, time - epoch)
 
-    """ DATA """
     parameters.append(
         [objects[0][12], epoch, endtime, timestep, probability, percentage]
     )
@@ -102,7 +131,6 @@ def run_sim(
 
 if __name__ == "__main__":
 
-    """GROUP SELECTION"""
     if len(sys.argv) > 1 and int(sys.argv[1]) in all_groups:
         group = int(sys.argv[1])
 
@@ -110,24 +138,22 @@ if __name__ == "__main__":
         print("\nGive a valid number of the orbit you want to evaluate")
         sys.exit()
 
+    # select given group.
     group_selection = data_array[:, 12] == group
-
     data_array_group = data_array[group_selection]
-
     objects = data_array_group
 
-    """ VISUALISATION"""
+    # Activate / don't activate the view.
     draw = False
-
-    # if len(sys.argv) > 2 and sys.argv[2] == "view":
-    #     draw = True
+    if len(sys.argv) > 2 and sys.argv[2] == "view":
+        draw = True
 
     parameters, collisions, added_debris = run_sim(
         objects,
         group,
         draw,
-        margin=100,
-        endtime=315569260,
+        margin=700,
+        endtime=315_569_26,
         timestep=100,
         epoch=1675209600.0,
         probability=0,
@@ -135,20 +161,21 @@ if __name__ == "__main__":
         frequency_new_debris=None,
     )
 
-    """ DATA STORAGE """
-    with open(f"data_storage/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
+    # Save the data to "sim_data" in the correct group folder.
+
+    with open(f"sim_data/group_{objects[0][12]}/parameters.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(
             ["group", "epoch", "endtime", "timestep", "probabilty", "precentage"]
         )
         write.writerows(parameters)
 
-    with open(f"data_storage/group_{objects[0][12]}/collisions.csv", "w") as csvfile:
+    with open(f"sim_data/group_{objects[0][12]}/collisions.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["object1", "object2", "time"])
         write.writerows(collisions)
 
-    with open(f"data_storage/group_{objects[0][12]}/debris.csv", "w") as csvfile:
+    with open(f"sim_data/group_{objects[0][12]}/debris.csv", "w") as csvfile:
         write = csv.writer(csvfile)
         write.writerow(["number_debris", "time"])
         write.writerows(added_debris)

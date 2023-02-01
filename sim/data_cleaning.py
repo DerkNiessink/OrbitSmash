@@ -126,8 +126,8 @@ group_amount = dataset.groupby("groups")["groups"].count()
 all_groups = []
 for i in group_amount.index:
     all_groups.append(i)
-    if not os.path.exists(f"data_storage/group_{i}"):
-        os.makedirs(f"data_storage/group_{i}", exist_ok=True)
+    if not os.path.exists(f"sim_data/group_{i}"):
+        os.makedirs(f"sim_data/group_{i}", exist_ok=True)
 
 # Add 0 for satellite and 1 for debris.
 dataset = dataset.copy()

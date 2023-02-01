@@ -53,4 +53,4 @@ class View:
         rate(fps)
         scene.title = f"t = {time} \nN objects = {len(objects)}"
         for object, drawable in zip(objects, self.drawables):
-            drawable.pos = vector(object[3], object[4], object[5])
+            drawable.pos = vector(object[4], object[5], object[6])

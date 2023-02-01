@@ -3,7 +3,7 @@
 
 Profiling:
 * pip install gprof2dot
-* python -m cProfile -o data/profile.stats sim/main.py run
+* python -m cProfile -o data/profile.stats sim/main.py
 * gprof2dot data/profile.stats -f pstats > data/profile.dot
 * dot -Tpng data/profile.dot -o data/profile.png
 * open data/profile.png
