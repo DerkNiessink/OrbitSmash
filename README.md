@@ -1,8 +1,6 @@
 # Project-Minor-Computational-Science
 Developers: Jenna de Vries, Kato Schmidt, Derk Niessink
 
-## User manual
-
 We developed a simulation for modeling satellites and space debris. In this
 simulation we use satellite and debris data in low-Earth orbit (LEO). The data
 consist of more than 11000 objects, that is why for performance reasons, we
@@ -17,7 +15,7 @@ generated in these runs we plotted the graph in our scientific poster. It takes
 too long to reproduce this graph, that is why we provided an animation that can
 be reproduced when following the steps below.
 
-### Group 19 simulation
+## Group 19 simulation
 ![](https://github.com/JennaVries/Project-Minor-Computational-Science/blob/submit_version/earth.gif)
 
 
