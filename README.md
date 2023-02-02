@@ -31,8 +31,8 @@ $ python3 -m venv venv
 ```
 
 * Activate the virtual environment
-  - windows: `$ venv\Scripts\activate`
-  - linux/macOS: `$ source venv/bin/activate`
+  - windows: ```$ venv\Scripts\activate```
+  - linux/macOS: ```$ source venv/bin/activate```
 
 * Install packages and run the sim with a desired group number: 
 ```
