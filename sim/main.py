@@ -7,7 +7,7 @@ Usage:
 -> python main.py [orbit number (between 0 and 99)] [view (optional)]
 
 * If "view" is given, an animation will start up in the browser.
-* Data will be saved to "sim_data" the folder corresponding to the group number.
+* Data will be saved to "sim_data" in the folder corresponding to the group number.
 """
 
 
