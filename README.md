@@ -1,6 +1,8 @@
 # Project-Minor-Computational-Science
 Developers: Jenna de Vries, Kato Schmidt, Derk Niessink
 
+## User manual
+
 We developed a simulation for modeling satellites and space debris. In this
 simulation we use satellite and debris data in low-Earth orbit (LEO). The data
 consist of more than 11000 objects, that is why for performance reasons, we
@@ -15,11 +17,11 @@ generated in these runs we plotted the graph in our scientific poster. It takes
 too long to reproduce this graph, that is why we provided an animation that can
 be reproduced when following the steps below.
 
-## Group 19 simulation
+### Group 19 simulation
 ![](https://github.com/JennaVries/Project-Minor-Computational-Science/blob/submit_version/earth.gif)
 
 
-## Running the simulation
+### Running the simulation
 
 * Clone the repository
 * Create a virtual environment and install required packages:
@@ -55,20 +57,20 @@ And without the animation:
 $ python main.py 19
 ```
 
-## In the animation
+### In the animation
 
 * Red spheres indicate debris and white satellites.
 * Rotate by dragging while holding right click and zoom with mousewheel (easier to control with mouse!).
 
 
-## After the simulation
+### After the simulation
 
 * Data will be saved in `sim_data` in the corresponding group number folder.
 * A ZeroDivisionError will be printed in the terminal. There is nothing to do
 about this and is caused by the fact that vpython (the animation library) has not
 updated since the newest version of Python was released.
 
-## For developers
+### For developers
 
 Profiling:
 * pip install gprof2dot
