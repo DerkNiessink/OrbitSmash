@@ -50,7 +50,8 @@ An animation can be shown in the browser when adding the second argument "view".
 So for example running group 19 with the the animation -> `python main.py 19 view`.
 And without the animation                             -> `python main.py 19`.
 
-In the animation:
+### In the animation
+
 * Red spheres indicate debris and white satellites.
 * Rotate by dragging while holding right click and zoom with mousewheel (easier to control with mouse!).
 
