@@ -154,7 +154,7 @@ if __name__ == "__main__":
         draw,
         margin=700,
         endtime=315_569_26,
-        timestep=100,
+        timestep=5,
         epoch=1675209600.0,
         probability=0,
         percentage=0,
