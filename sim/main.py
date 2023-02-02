@@ -153,7 +153,7 @@ if __name__ == "__main__":
         group,
         draw,
         margin=700,
-        endtime=315_569_26,
+        endtime=100_000,
         timestep=5,
         epoch=1675209600.0,
         probability=0,
