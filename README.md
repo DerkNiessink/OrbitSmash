@@ -24,7 +24,7 @@ be reproduced when following the steps below.
 ### Running the simulation
 
 * Clone the repository
-* Create a virtual environment and install required packages:
+* Create a virtual environment:
 ```
 $ cd sim
 $ python3 -m venv venv
@@ -40,7 +40,7 @@ $ python3 -m venv venv
   $ source venv/bin/activate
   ```
 
-* Install packages and run the sim with a desired group number: 
+* Install  required packages and run the sim with a desired group number: 
 ```
 $ pip install -r requirements.txt
 $ python main.py [Group number] [view]
