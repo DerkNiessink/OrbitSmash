@@ -23,20 +23,18 @@ be reproduced when following the steps below.
 
 ### Running the simulation
 
-1 Clone the repository
-2 Navigate to `sim` directory:
+* Clone the repository
+* Create a virtual environment and install required packages:
 ```
-cd sim
-```
-3 Create a virtual environment and install required packages:
-```
+$ cd sim
 $ python3 -m venv venv
-$ source venv/bin/activate                                  
-$ venv/Scripts/activate
+```
+* Activate the virtual environment
+- windows: `$ venv\Scripts\activate`
+- linux/macOS: `$ source venv/bin/activate`
+* Install packages and run the sim with a desired group number: 
+```
 $ pip install -r requirements.txt
-```
-6 Run the sim with a desired group number: 
-```
 $ python main.py [Group number] [view]
 ```
 
