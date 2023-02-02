@@ -30,7 +30,7 @@ $ cd sim
 $ python3 -m venv venv
 ```
 
-* Activate the virtual environment
+* Activate the virtual environment:
   - windows: 
   ``` 
   $ venv\Scripts\activate
