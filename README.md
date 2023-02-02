@@ -70,7 +70,7 @@ $ python main.py 19
 about this and is caused by the fact that vpython (the animation library) has not
 updated since the newest version of Python was released.
 
-### For developers
+## For developers
 
 Profiling:
 * pip install gprof2dot
