@@ -47,6 +47,7 @@ $ python main.py [Group number] [view]
 ```
 
 An animation can be shown in the browser when adding the second argument "view".
+
 So for example running group 19 with the the animation:
 ```
 $ python main.py 19 view
