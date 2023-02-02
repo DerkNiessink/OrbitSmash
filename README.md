@@ -26,7 +26,7 @@ be reproduced when following the steps below.
 * Clone the repository
 * Navigate to `sim` directory -> `cd sim`
 * Create a virtual environment -> `python3 -m venv venv`
-* Activate the virtual environment -> `source venv/bin/activate`
+* Activate the virtual environment -> `source venv/bin/activate` (`venv/Scripts/activate` on windows)
 * Download the required packages -> `pip install -r requirements.txt`
 * Run the sim with a desired group number -> `python main.py [Group number] [view]`
 
