@@ -23,13 +23,13 @@ be reproduced when following the steps below.
 
 ### Running the simulation
 
-* Clone the repository
-* Navigate to `sim` directory -> `cd sim`
-* Create a virtual environment -> `python3 -m venv venv`
-* Activate the virtual environment -> * `source venv/bin/activate` on linux/macOs 
-*                                     * `venv/Scripts/activate` on windows
-* Download the required packages -> `pip install -r requirements.txt`
-* Run the sim with a desired group number -> `python main.py [Group number] [view]`
+1 Clone the repository
+2 Navigate to `sim` directory -> `cd sim`
+3 Create a virtual environment -> `python3 -m venv venv`
+4 Activate the virtual environment -> * `source venv/bin/activate` on linux/macOs                                  
+                                      * `venv/Scripts/activate` on windows
+5 Download the required packages -> `pip install -r requirements.txt`
+6 Run the sim with a desired group number -> `python main.py [Group number] [view]`
 
 An animation can be shown in the browser when adding the second argument "view".
 So for example running group 19 with the the animation -> `python main.py 19 view`.
