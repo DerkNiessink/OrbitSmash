@@ -6,7 +6,7 @@ Developers: Jenna de Vries, Kato Schmidt, Derk Niessink
 We developed a simulation for modeling satellites and space debris. In this
 simulation we use satellite and debris data in low-Earth orbit (LEO). The data
 consist of more than 11000 objects, that is why for performance reasons, we
-divided the data in groups. The groups are determined by the semi-major axes of
+divided the data in 100 groups. The groups are determined by the semi-major axes of
 the objects, because objects that do not have a similar semi-major axis will
 never collide.
 
