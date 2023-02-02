@@ -1,3 +1,12 @@
+"""
+"view.py"
+
+This module contains the class "View" for an animation in the browser, where
+objects are spheres and the positions are drawn around Earth. Red coloured
+spheres indicate debris and white satellites.
+"""
+
+
 from vpython import *
 import numpy as np
 
@@ -8,7 +17,6 @@ class View:
     def __init__(self, objects: np.ndarray):
         self.objects = objects
         self.Earth = sphere(pos=vector(0, 0, 0), radius=self.RE, texture=textures.earth)
-        # self.Earth.rotate(angle=0.5 * pi, axis=vector(1, 0, 0))
         scene.width, scene.height = 1900, 980
         self.drawables = self._make_drawables()
 
@@ -53,4 +61,4 @@ class View:
         rate(fps)
         scene.title = f"t = {time} \nN objects = {len(objects)}"
         for object, drawable in zip(objects, self.drawables):
-            drawable.pos = vector(object[3], object[4], object[5])
+            drawable.pos = vector(object[4], object[5], object[6])

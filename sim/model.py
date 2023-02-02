@@ -1,45 +1,32 @@
+"""
+"model.py"
+
+This module contains all model functions. Functions which have to be called
+every time step are accelerated using Numba's jit decorator. The decorator
+ensures that the these functions will be compiled in C code.
+"""
+
+
 import numpy as np
 from numba import jit
 
 from scipy.spatial.transform import Rotation
 
 
-"""
-
-"objects" =
-['EPOCH' (0), 'INCLINATION' (1), 'RA_OF_ASC_NODE' (2), 'ARG_OF_PERICENTER' (3),
-       'MEAN_ANOMALY' (4), 'NORAD_CAT_ID' (5), 'SEMIMAJOR_AXIS' (6), 'OBJECT_TYPE' (7),
-       'RCS_SIZE' (8), 'LAUNCH_DATE' (9), 'positions' (10), 'rotation_matrix' (11), 'groups' (12)]
-
-"objects_fast" =
-['EPOCH' (0), 'MEAN_ANOMALY' (1), 'SEMIMAJOR_AXIS' (2), 'SATTELITE/DEBRIS'(3), 'pos_x' (4), pos_y' (5), 'pos_z' (6)]
-
-"""
-
-""" PARAMETERS 
-    Hier kunnen we een lijstje parameters maken die we willen opslaan tijdens het runnen.
-    Bijv:
-
-    collisions = {'objects': [object1, object2], 'timestep': float}
-    new_debris = {'timestep': float, 'number of new debris': 'int'}
-    parameters = ['group', 'epoch', 'endtime', 'timestep', 'probabilty', 'percentage']
-    etc. 
-    """
-
-
-JD = 86400  # s
 # standard gravitational parameter = G * M
 mu = 6.6743 * 10**-11 * 5.972 * 10**24  # m**3 * s**-2
-max_norad_cat_id = 270288
 
 
-def initialize_positions(objects: np.ndarray, epoch: float):
+def initialize_positions(objects: np.ndarray, epoch=1675209600.0):
     """
     Initialize all objects in the given array to the same given epoch by
     adjusting object's true anomaly.
 
-    objects: array of objects to be calibrated.
-    epoch: desired Julian date in seconds (Monday 1 November 2021 13:00:01).
+    objects: array of objects to be calibrated in the following form:
+        -> ['EPOCH', 'INCLINATION', 'RA_OF_ASC_NODE', 'ARG_OF_PERICENTER',
+       'MEAN_ANOMALY', 'NORAD_CAT_ID', 'SEMIMAJOR_AXIS', 'OBJECT_TYPE',
+       'RCS_SIZE', 'LAUNCH_DATE', 'positions', 'rotation_matrix', 'groups'].
+    epoch: desired Julian date in seconds (default = Monday 1 November 2021 13:00:01).
     """
     for object in objects:
         initialized_anomaly = calc_new_anomaly(epoch, object[0], object[4], object[6])
@@ -52,20 +39,22 @@ def random_debris(
     matrices: np.ndarray,
     time: float,
     percentage: float,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, int]:
 
     """
     Add a certain amount, given by the percentage of the existing debris, of
     debris with random orbits and positions. The new debris is added to the
-    objects and debris arrays and its random rotation matrix to matrices.
+    objects and its random rotation matrix to matrices.
 
-    objects: np.array of all objects (including debris).
-    debris: np.array of all debris.
-    matrices: np.array of all rotation matrices of the objects.
+    objects: array of all objects of the form:
+    -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS_BOOL',
+    'pos_x', pos_y', 'pos_z'].
+    matrices: array of all rotation matrices of the objects.
     time: current simulation times.
     percentage: desired percentage of the number of existing objects to add.
 
-    Returns a tuple of the new objects, debris and matrices arrays.
+    Returns a tuple of the new objects array, matrices array and the number
+    of new debris.
     """
 
     n_new_debris = np.ceil(len(objects) * (percentage / 100))
@@ -82,8 +71,17 @@ def random_debris(
     return objects, matrices, int(n_new_debris)
 
 
-def random_params(objects) -> tuple:
-    """Returns random object parameters"""
+def random_params(objects) -> tuple[float, float, np.ndarray]:
+    """
+    Returns random object parameters.
+
+    objects: array of all objects of the form:
+    -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS_BOOL',
+    'pos_x', pos_y', 'pos_z'].
+
+    Return a tuple of the random mean_anomaly in degrees, random semimajor-axis
+    in meters (chosen from existing objects) and rotation matrix.
+    """
     R = Rotation.from_euler(
         "zxz",
         [
@@ -108,10 +106,10 @@ def calc_new_anomaly(
 
     time: Julian date in seconds of the desired anomaly.
     epoch: Julian date in seconds.
-    mean_anomaly: anomaly corresponding to the object's epoch in rad.
+    mean_anomaly: anomaly corresponding to the object's epoch in degrees.
     semimajor_axis: semimajor-axis of the object's orbit in meters.
     """
-    time_delta = time - epoch  # s
+    time_delta = time - epoch
     return mean_anomaly + time_delta * np.sqrt(mu / semimajor_axis**3)
 
 
@@ -136,12 +134,10 @@ def new_position(
     Returns the 3D position vector (in the Earth frame) of the object at
     the given time.
     """
-    time_delta = time - epoch  # s
-    true_anomaly = mean_anomaly + time_delta * np.sqrt(mu / semimajor_axis**3)
+    true_anomaly = calc_new_anomaly(time, epoch, mean_anomaly, semimajor_axis)
     pos_orbit_frame = (
         np.array([np.cos(true_anomaly), np.sin(true_anomaly), 0]) * semimajor_axis
     )
-
     return rotation_matrix.dot(pos_orbit_frame)
 
 
@@ -150,11 +146,12 @@ def calc_all_positions(
     objects: np.ndarray, matrices: np.ndarray, time: float
 ) -> np.ndarray:
     """
-    Calculate the new positions of all objects.
+    Calculate the new positions of all objects and update the objects array.
 
-    objects: array of objects to be evaluated. An objects has to be in the
+    objects: array of objects to be evaluated. An object has to be in the
     following form:
-     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS', 'pos_x', pos_y', 'pos_z']
+     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS_BOOL',
+    'pos_x', pos_y', 'pos_z'].
     marices: array of rotation matrices of the objects computed from the 3
     orbital angles.
     time: time at which the positions will be calculated.
@@ -176,18 +173,24 @@ def calc_all_positions(
 
 
 @jit(nopython=True)
-def check_collisions(objects: np.ndarray, margin: float):
+def check_collisions(
+    objects: np.ndarray, margin: float
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Checks for collisions by iterating over all possible combinations,
     by checking if the objects in the combination share a similar position.
+    A similar positions means that the distance between the position vectors
+    is smaller than the given margin.
 
     objects: array of objects to be evaluated. An object has to be in the
     following form:
-     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'pos_x', pos_y', 'pos_z']
-    margin: say that there could be a collision when difference of the x, y
-    and z coordinates is smaller than this margin.
+     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATELLITE/DEBRIS_BOOL',
+    'pos_x', pos_y', 'pos_z'].
+    margin: say that there could be a collision when the distance is smaller
+    than this value.
 
-    returns a generator of tuples of the two candidate colliding objects.
+    returns a tuple of the two candidate colliding objects if the distance
+    between the vectors is smaller than the margin.
     """
     for i in range(len(objects) - 1):
         for j in range(i + 1, len(objects) - 1):
@@ -205,19 +208,17 @@ def check_collisions(objects: np.ndarray, margin: float):
 @jit(nopython=True)
 def collision(object1: np.ndarray, object2: np.ndarray):
     """
-    Add two new objects at the positions of the two objects involved in a
-    collision with a slightly adjusted inclination.
+    Add a new debris at the position of the objects involved with a adjusted
+    anomaly and semimajor-axis.
 
     object_involved: np.array of the object to be evaluated and has to be in the
     following form:
-     -> ['EPOCH' (0), 'MEAN_ANOMALY' (1), 'SEMIMAJOR_AXIS' (2), 'SATTELITE/DEBRIS'(3), 'pos_x' (4), pos_y' (5), 'pos_z' (6)]
+     -> ['EPOCH', 'MEAN_ANOMALY', 'SEMIMAJOR_AXIS', 'SATTELITE/DEBRIS_BOOL',
+    'pos_x', pos_y', 'pos_z'].
 
-    Returns a copy of the objects with the 2 new objects appended.
+    Returns an array of the same form as above with the adjusted values.
     """
     new_debris = list()
-    # Create new debris
-
-    # calculate new inclination
     g = np.random.rand()
     new_semi_major_axis = object1[2] + ((g * 200) - 100)
 
