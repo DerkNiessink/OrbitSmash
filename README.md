@@ -32,11 +32,11 @@ $ python3 -m venv venv
 
 3. Activate the virtual environment:
 
-  windows: 
+  Windows: 
   ``` 
   $ venv\Scripts\activate
   ```
-  linux/macOS: 
+  Linux/macOS: 
   ```
   $ source venv/bin/activate
   ```
