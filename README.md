@@ -1,4 +1,4 @@
-# Project-Minor-Computational-Science
+# OrbitSmash
 Developers: Jenna de Vries, Kato Schmidt, Derk Niessink
 
 ## User manual
