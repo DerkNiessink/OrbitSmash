@@ -26,7 +26,6 @@ be reproduced when following the steps below.
 1. Clone the repository
 2. Create a virtual environment:
 ```
-$ cd sim
 $ python3 -m venv venv
 ```
 
@@ -41,9 +40,10 @@ $ python3 -m venv venv
   $ source venv/bin/activate
   ```
 
-4. Install  required packages and run the sim with a desired group number: 
+4. Install required packages and run the sim with a desired group number: 
 ```
 $ pip install -r requirements.txt
+$ cd sim
 $ python main.py [Group number] [view]
 ```
 
