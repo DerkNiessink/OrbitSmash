@@ -1,0 +1,66 @@
+archspec @ file:///croot/archspec_1709217642129/work
+attrs==23.1.0
+boltons @ file:///C:/ci_311/boltons_1677729932371/work
+Brotli @ file:///C:/b/abs_3d36mno480/croot/brotli-split_1714483178642/work
+build==0.10.0
+CacheControl==0.13.1
+certifi @ file:///C:/b/abs_1fw_exq1si/croot/certifi_1725551736618/work/certifi
+cffi @ file:///C:/b/abs_90yq4lmu83/croot/cffi_1726856448345/work
+charset-normalizer @ file:///croot/charset-normalizer_1721748349566/work
+cleo==2.0.1
+colorama @ file:///C:/ci_311/colorama_1676422310965/work
+conda @ file:///C:/b/abs_3bs4tei4e9/croot/conda_1733841834375/work
+conda-content-trust @ file:///C:/ci_311/conda-content-trust_1676467587370/work
+conda-libmamba-solver @ file:///croot/conda-libmamba-solver_1727775630457/work/src
+conda-package-handling @ file:///C:/b/abs_7fz3aferfv/croot/conda-package-handling_1731369038903/work
+conda_package_streaming @ file:///C:/b/abs_bdz9vbvbh2/croot/conda-package-streaming_1731366449946/work
+crashtest==0.4.1
+cryptography @ file:///C:/b/abs_b28tzldafl/croot/cryptography_1686613103834/work
+distlib==0.3.7
+distro @ file:///C:/b/abs_71xr36ua5r/croot/distro_1714488282676/work
+dulwich==0.21.6
+filelock==3.12.4
+frozendict @ file:///C:/b/abs_2alamqss6p/croot/frozendict_1713194885124/work
+idna @ file:///C:/b/abs_aad84bnnw5/croot/idna_1714398896795/work
+importlib-metadata==6.8.0
+installer==0.7.0
+jaraco.classes==3.3.0
+jsonpatch @ file:///C:/b/abs_4fdm88t7zi/croot/jsonpatch_1714483974578/work
+jsonpointer==2.1
+jsonschema==4.17.3
+keyring==24.2.0
+libmambapy @ file:///C:/b/abs_7fjjcok9fe/croot/mamba-split_1732896315069/work/libmambapy
+menuinst @ file:///C:/b/abs_cabvzz4p7a/croot/menuinst_1731364936347/work
+more-itertools==10.1.0
+msgpack==1.0.7
+packaging @ file:///C:/b/abs_c3vlh0z4jw/croot/packaging_1720101866539/work
+pexpect==4.8.0
+pkginfo==1.9.6
+platformdirs @ file:///C:/b/abs_b6z_yqw_ii/croot/platformdirs_1692205479426/work
+pluggy @ file:///C:/b/abs_dfec_m79vo/croot/pluggy_1733170145382/work
+poetry==1.6.1
+poetry-core==1.7.0
+poetry-plugin-export==1.5.0
+ptyprocess==0.7.0
+pycosat @ file:///C:/b/abs_5csdern___/croot/pycosat_1714513102923/work
+pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
+pyproject_hooks==1.0.0
+pyrsistent==0.19.3
+PySocks @ file:///C:/ci_311/pysocks_1676425991111/work
+pywin32-ctypes==0.2.2
+rapidfuzz==2.15.1
+requests @ file:///C:/b/abs_c3508vg8ez/croot/requests_1731000584867/work
+requests-toolbelt==1.0.0
+ruamel.yaml @ file:///C:/b/abs_0cunwx_ww6/croot/ruamel.yaml_1727980181547/work
+ruamel.yaml.clib @ file:///C:/b/abs_5fk8zi6n09/croot/ruamel.yaml.clib_1727769837359/work
+shellingham==1.5.3
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+tomlkit==0.12.1
+tqdm @ file:///C:/b/abs_77wju137gk/croot/tqdm_1724853945787/work
+trove-classifiers==2023.9.19
+truststore @ file:///C:/b/abs_55z7b3r045/croot/truststore_1695245455435/work
+urllib3 @ file:///C:/b/abs_9a_f8h_bn2/croot/urllib3_1727769836930/work
+virtualenv==20.24.5
+win-inet-pton @ file:///C:/ci_311/win_inet_pton_1676425458225/work
+zipp==3.17.0
+zstandard @ file:///C:/b/abs_31t8xmrv_h/croot/zstandard_1731356578015/work
