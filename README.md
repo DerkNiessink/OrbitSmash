@@ -24,25 +24,14 @@ be reproduced when following the steps below.
 ### Running the simulation
 
 1. Clone the repository
-2. Create a virtual environment:
+2. Create a virtual environment using [uv](https://docs.astral.sh/uv/):
 ```
-$ python3 -m venv venv
+$ uv venv
 ```
-
-3. Activate the virtual environment:
-
-  Windows: 
-  ``` 
-  $ venv\Scripts\activate
-  ```
-  Linux/macOS: 
-  ```
-  $ source venv/bin/activate
-  ```
-
+3. Activate the virtual environment
 4. Install required packages and run the sim with a desired group number: 
 ```
-$ pip install -r requirements.txt
+$ uv pip install -r requirements.txt
 $ cd sim
 $ python main.py [Group number] [view]
 ```
