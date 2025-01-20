@@ -6,7 +6,6 @@ objects are spheres and the positions are drawn around Earth. Red coloured
 spheres indicate debris and white satellites.
 """
 
-
 from vpython import *
 import numpy as np
 
