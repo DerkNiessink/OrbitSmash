@@ -12,7 +12,7 @@ never collide.
 
 Our goal was to simulate future space collisions. For this simulation we needed 
 to run the simulated time of 10 years and for all groups. This took multiple hours
-and we ran the simulation in parallel on the UvA supercomputer. With the data
+and we ran the simulation in parallel on the UvA computercluster. With the data
 generated in these runs we plotted the graph in our scientific poster. It takes
 too long to reproduce this graph, that is why we provided an animation that can
 be reproduced when following the steps below.
